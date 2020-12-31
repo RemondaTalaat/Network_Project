@@ -30,10 +30,11 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/Hub.o $O/Node.o
+OBJS = $O/Hub.o $O/Node.o $O/Imessage_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    Imessage.msg
 
 # SM files
 SMFILES =

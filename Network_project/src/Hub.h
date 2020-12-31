@@ -17,6 +17,7 @@
 #define __NETWORK_PROJECT_HUB_H_
 
 #include <omnetpp.h>
+#include <bitset>
 
 using namespace omnetpp;
 
@@ -25,6 +26,10 @@ using namespace omnetpp;
  */
 class Hub : public cSimpleModule
 {
+  private:
+    int sender;
+    int receiver;
+
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);

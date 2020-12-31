@@ -20,8 +20,6 @@ package network_project;
 //
 simple Node
 {
-    parameters:
-    	double n = default(4);
     gates:
         input in;
         output out;

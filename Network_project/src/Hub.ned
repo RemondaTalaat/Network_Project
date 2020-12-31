@@ -21,7 +21,6 @@ package network_project;
 simple Hub
 {
     parameters:
-        double lambda = default(2.0);
         double n = default(4);
     gates:
         input ins[];

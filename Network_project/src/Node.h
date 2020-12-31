@@ -17,6 +17,7 @@
 #define __NETWORK_PROJECT_NODE_H_
 
 #include <omnetpp.h>
+#include <bitset>
 
 using namespace omnetpp;
 
