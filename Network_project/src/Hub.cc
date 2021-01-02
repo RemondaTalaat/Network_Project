@@ -35,11 +35,11 @@ void Hub::handleMessage(cMessage *msg)
 
     // when receiving a self message allocate new session for 2 random nodes to communicate with each other
     if (msg->isSelfMessage()) {
-
-        sender = uniform(0, par("n"));
-        do {
-            receiver = uniform(0, par("n"));
-        } while(receiver == sender);
+        
+        //sender = uniform(0, par("n"));
+        //do {
+        //    receiver = uniform(0, par("n"));
+        //} while(receiver == sender);
 
         EV << ". Scheduled a new packet after " << 120 << "s" << endl;
         scheduleAt(simTime() + 120 , new cMessage(""));
