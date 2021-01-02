@@ -20,6 +20,9 @@ package network_project;
 //
 simple Node
 {
+    parameters:
+        // from 0 to 7 (8 combinations) --> window size = 7
+        int max_seq = default(7);
     gates:
         input in;
         output out;

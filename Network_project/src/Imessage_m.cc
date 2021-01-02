@@ -179,6 +179,7 @@ inline std::ostream& operator<<(std::ostream& out, const std::vector<T,A>& vec)
 
 Imessage_Base::Imessage_Base(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
 {
+    EV << 2;
     this->sequence_number = 0;
     this->pad_length = 0;
     this->acknowledge = 0;

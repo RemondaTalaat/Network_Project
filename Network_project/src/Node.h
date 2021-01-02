@@ -18,6 +18,8 @@
 
 #include <omnetpp.h>
 #include <bitset>
+#include <vector>
+#include <string>
 
 using namespace omnetpp;
 
@@ -26,9 +28,27 @@ using namespace omnetpp;
  */
 class Node : public cSimpleModule
 {
+  private:
+    std::vector<std::string> msgs {};
+
+    int max_seq; // from node.ned - max seq number 
+
+    int S; // sequence number of the recently sent frame
+    int Sf; // sequence number of the first frame in the window
+    int Sl;  // sequence number of the last frame in the window
+    int R;  // sequence number of the frame expected to received
+
+
+
+
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    virtual void generateMsgs();
+    void sendMsg();
+    virtual void cirInc();
+  
+
 };
 
 #endif
