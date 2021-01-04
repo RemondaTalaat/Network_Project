@@ -20,6 +20,8 @@
 #include <bitset>
 #include <vector>
 #include <string>
+#include <queue>
+
 
 using namespace omnetpp;
 
@@ -36,7 +38,11 @@ class Node : public cSimpleModule
     int S; // sequence number of the recently sent frame
     int Sf; // sequence number of the first frame in the window
     int Sl;  // sequence number of the last frame in the window
-    int R;  // sequence number of the frame expected to received
+    int R;  // sequence number of the frame expected to be received
+    
+    int ack_buffer; // buffer that indicates next frame to send ack on // seq num of tha frame to be acknowledged
+
+    std::queue<int> acks_to_be_sent;
 
 
 
@@ -46,7 +52,9 @@ class Node : public cSimpleModule
     virtual void handleMessage(cMessage *msg);
     virtual void generateMsgs();
     void sendMsg();
-    virtual void cirInc();
+    void post_receive_ack(cMessage *msg); // slide the window
+    void post_receive_frame(cMessage *msg); // schedule ack
+
   
 
 };
