@@ -22,6 +22,7 @@
 #include <string>
 
 using namespace omnetpp;
+using namespace std;
 
 /**
  * TODO - Generated class
@@ -47,6 +48,7 @@ class Node : public cSimpleModule
     virtual void generateMsgs();
     void sendMsg();
     virtual void cirInc();
+    string computeHamming(string s, int &to_pad);
   
 
 };
