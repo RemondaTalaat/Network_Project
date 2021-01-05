@@ -262,6 +262,8 @@ void Node::cirInc()
     // if (this->S > this->Sl){
     //     this->S = 0;
     // }
+
+}
 void Node::post_receive_ack(cMessage *msg){
     EV << this->Sf << endl << this->S << endl << this->Sl << endl << (((Imessage_Base *)msg)->getAcknowledge()) << endl;
     // this->Sf += abs((((Imessage_Base *)msg)->getAcknowledge()) - this->Sf % (this->max_seq + 1)) + 1;
