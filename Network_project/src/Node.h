@@ -57,9 +57,7 @@ class Node : public cSimpleModule
     string computeHamming(string s, int &to_pad);
     void post_receive_ack(cMessage *msg); // slide the window
     void post_receive_frame(cMessage *msg); // schedule ack
-
-  
-
+    string decodeHamming(string s, int padding);
 };
 
 #endif
