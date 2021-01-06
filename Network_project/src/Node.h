@@ -21,6 +21,8 @@
 #include <vector>
 #include <string>
 #include <queue>
+#include <cstdlib>
+
 
 
 using namespace omnetpp;
@@ -54,6 +56,9 @@ class Node : public cSimpleModule
     void sendMsg();
     void post_receive_ack(cMessage *msg); // slide the window
     void post_receive_frame(cMessage *msg); // schedule ack
+    void post_timeout_window_resend(cMessage *msg);
+    void post_timeout_send_ack_only(cMessage *msg);
+
 
   
 
