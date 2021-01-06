@@ -23,9 +23,12 @@
 #include <queue>
 #include <cstdlib>
 
+#include <unordered_map>
+
 
 
 using namespace omnetpp;
+using namespace std;
 
 /**
  * TODO - Generated class
@@ -54,6 +57,8 @@ class Node : public cSimpleModule
     virtual void handleMessage(cMessage *msg);
     virtual void generateMsgs();
     void sendMsg();
+    virtual void cirInc();
+    string computeHamming(string s, int &to_pad);
     void post_receive_ack(cMessage *msg); // slide the window
     void post_receive_frame(cMessage *msg); // schedule ack
     void post_timeout_window_resend(cMessage *msg);
