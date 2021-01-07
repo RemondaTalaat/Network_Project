@@ -196,27 +196,29 @@ string Node::computeHamming(string s, int &to_pad){
     int str_length = s.length();
     int m = 8 * str_length;
     int r = 1;
-    while(m + r + 1 > (2 ^ r)){
+    while(m + r + 1 > pow(2 , r)){
         r++;
     }
     unordered_map<int, bool> parity_bits_exist;
-    vector<bool> parity_bits;
+    vector<int> parity_bits;
     for(int i = 0 ; i < r ; i++){
-        parity_bits.push_back(2^i);
-        parity_bits_exist[2^i] = 1;
+        parity_bits.push_back(pow(2,i));
+        parity_bits_exist[pow(2,i)] = 1;
     }
+
 
     int total_bits = m + r;
     vector<bool> bits(total_bits+1);
     for(int i = 0 ; i < bits.size(); i++)
         bits[i] = 0;
 
-    int curr_idx = 0;
+    int curr_idx = 1;
     for(int i = 0 ; i < str_length; i++){
         bitset<8> char_bits(s[i]);
         for(int j = 7; j >= 0; j--){
-            if(!parity_bits_exist[curr_idx])
+            if(!parity_bits_exist[curr_idx]){
                 bits[curr_idx++] = char_bits[j];
+            }
             else{
                 curr_idx++;
                 j++;
@@ -229,7 +231,7 @@ string Node::computeHamming(string s, int &to_pad){
         bool take = 1;
         int processed = 0;
         int count_ones = 0;
-        for(int j = 1; j <= total_bits; j++){
+        for(int j = curr_parity; j <= total_bits; j++){
             if(take){
                 count_ones+=bits[j];
             }
@@ -240,6 +242,7 @@ string Node::computeHamming(string s, int &to_pad){
         }
         bits[curr_parity] = (count_ones % 2 == 0) ? 0 : 1;
     }
+
 
     string result = "";
 
@@ -256,21 +259,20 @@ string Node::computeHamming(string s, int &to_pad){
         result += (char)char_bits.to_ulong();
     }
     return result;
-
 }
 
 string Node::decodeHamming(string s, int padding){
     int str_length = s.length();
     int mr = 8 * str_length - padding;
     int r = 1;
-    while(mr + 1 > (2 ^ r)){
+    while(mr + 1 > (pow(2,r))){
         r++;
     }
-    unordered_map<bool, bool> parity_bits_exist;
-    vector<bool> parity_bits;
+    unordered_map<int, bool> parity_bits_exist;
+    vector<int> parity_bits;
     for(int i = 0 ; i < r ; i++){
-        parity_bits.push_back(2^i);
-        parity_bits_exist[2^i] = 1;
+        parity_bits.push_back(pow(2,i));
+        parity_bits_exist[pow(2,i)] = 1;
     }
 
     int total_bits = mr;
@@ -278,13 +280,15 @@ string Node::decodeHamming(string s, int padding){
     for(int i = 0 ; i < bits.size(); i++)
         bits[i] = 0;
 
-    int curr_idx = 0;
+    int curr_idx = 1;
     for(int i = 0 ; i < str_length; i++){
         bitset<8> char_bits(s[i]);
         for(int j = 7; j >= 0; j--){
             bits[curr_idx++] = char_bits[j];
         }
     }
+
+
 
     vector<bool> parity_vals(r);
 
@@ -293,23 +297,24 @@ string Node::decodeHamming(string s, int padding){
         bool take = 1;
         int processed = 0;
         int count_ones = 0;
-        for(int j = 1; j <= total_bits; j++){
+        for(int j = curr_parity; j <= total_bits; j++){
             if(take){
-                count_ones+=bits[j];
+                if(j != curr_parity)    
+                    count_ones+=bits[j];
             }
             if(++processed == curr_parity){
                 processed = 0;
                 take = !take;
             }
         }
-        parity_vals[i] = (bits[2^i] && (count_ones % 2 == 0)) || (!bits[2 ^ i] && count_ones % 2 != 0);
+        parity_vals[i] = (bits[pow(2,i)] && (count_ones % 2 == 0)) || (!bits[pow(2,i)] && count_ones % 2 != 0);
     }
+
 
     int wrong_bit = 0;
 
-    for(int i = r-1 ; i >= 0; i--){
-        int idx = r - i - 1;
-        wrong_bit += parity_vals[i] * (2 ^ (idx));
+    for(int i = 0 ; i < r; i++){
+        wrong_bit += parity_vals[i] * (pow(2 , (i)));
     }
 
     bits[wrong_bit] = !bits[wrong_bit];
@@ -317,27 +322,27 @@ string Node::decodeHamming(string s, int padding){
     vector<bool> msg_bits(mr - r);
     curr_idx = 0;
 
-    for(int i = 1; i <= bits.size(); i++){
+    for(int i = 1; i < bits.size(); i++){
         if(curr_idx == mr)
             break;
         if(!parity_bits_exist[i]){
             msg_bits[curr_idx++] = bits[i];
-        }
-        else
-            curr_idx++;
+        }  
+  
     }
+
 
     string result = "";
 
 
     for(int i = 0; i < msg_bits.size(); i += 8){
         bitset<8> char_bits;
-        for(int j = 0; j < 8 ; j++)
-            char_bits[j] = bits[i+7-j];
+        for(int j = 0; j < 8 ; j++){
+            char_bits[j] = msg_bits[i+7-j];
+        }
         result += (char)char_bits.to_ulong();
     }
     return result;
-
 }
 
 void Node::cirInc()
