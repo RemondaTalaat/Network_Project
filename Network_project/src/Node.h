@@ -59,6 +59,7 @@ class Node : public cSimpleModule
     void sendMsg();
     virtual void cirInc();
     string computeHamming(string s, int &to_pad);
+    string decodeHamming(string s, int padding);
     void post_receive_ack(cMessage *msg); // slide the window
     void post_receive_frame(cMessage *msg); // schedule ack
     void post_timeout_window_resend(cMessage *msg);
