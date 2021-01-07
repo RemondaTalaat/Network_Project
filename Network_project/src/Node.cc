@@ -124,17 +124,17 @@ void Node::generateMsgs(){
     /*
     this function reads a random file as its msg vector
     */
-    // TODO: read from random file
-    this->msgs.push_back("hi there baby!");
-    this->msgs.push_back("hello!");
-    this->msgs.push_back("how are you?");
-    this->msgs.push_back("I love you");
-    this->msgs.push_back("hi1");
-    this->msgs.push_back("hi2");
-    this->msgs.push_back("hi3");
-    this->msgs.push_back("hi4");
-    this->msgs.push_back("hi5");
-
+    // read the text file specified to node index
+    std::stringstream ss;
+    ss << getIndex();
+    std::string file_name = "msg_files/" + ss.str() + ".txt";
+    std::string msg;
+    // read all lines into messages buffer
+    std::ifstream file(file_name);
+    while (getline (file, msg)) {
+      this->msgs.push_back(msg);
+    }
+    file.close();
 }
 
 void Node::sendMsg(){
