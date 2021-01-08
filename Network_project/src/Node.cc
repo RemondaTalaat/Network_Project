@@ -135,6 +135,8 @@ void Node::generateMsgs(){
       this->msgs.push_back(msg);
     }
     file.close();
+    // reverse to send messages in order
+    std::reverse(this->msgs.begin(), this->msgs.end());
 }
 
 void Node::sendMsg(){
