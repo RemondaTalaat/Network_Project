@@ -120,7 +120,7 @@ void Node::sendMsg()
         //EV << "msg payload = " << framed_msg << endl;
         const char* msg_payload = framed_msg.c_str();
         int padding = 0;
-        msg_payload = this->computeHamming(msg_payload, padding).c_str();
+        msg_payload = this->computeHamming(framed_msg, padding).c_str();
         Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
         msg ->setSequence_number(this->S % (this->max_seq + 1));
         msg ->setMessage_payload(msg_payload);
