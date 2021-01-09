@@ -18,9 +18,9 @@
 //
 
 packet Imessage {
-    @customize(true);  // see the generated C++ header for more info
-    int sequence_number;
-    int pad_length;
-    int acknowledge;
-    string message_payload;
+    @customize(true);                   // see the generated C++ header for more info
+    int sequence_number;                // message sequence number
+    int pad_length;                     // the padding length ( used in hamming )
+    int acknowledge;                    // the acknowledge of the last received frame
+    string message_payload;             // message content framed by char count
 }

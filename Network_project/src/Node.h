@@ -36,27 +36,27 @@ using namespace omnetpp;
 class Node : public cSimpleModule
 {
   private:
-    std::vector<std::string> msgs {};
+    std::vector<std::string> msgs {};    // hold the messages to be sent from the node
 
-    int max_seq;                        // from node.ned - max seq number
+    int max_seq;                         // from node.ned - max sequence number to define the window size
 
-    int S;                              // sequence number of the recently sent frame
-    int Sf;                             // sequence number of the first frame in the window
-    int Sl;                             // sequence number of the last frame in the window
-    int R;                              // sequence number of the frame expected to be received
-    int ack;
+    int S;                               // sequence number of the recently sent frame
+    int Sf;                              // sequence number of the first frame in the window
+    int Sl;                              // sequence number of the last frame in the window
+    int R;                               // sequence number of the frame expected to be received
+    int ack;                             // acknowledge of the last received frame
 
 
 
   protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    virtual void generateMsgs();
-    void sendMsg();
-    void post_receive_ack(cMessage *msg); // slide the window
-    void post_receive_frame(cMessage *msg); // schedule ack
-    std::string addCharCount(std::string msg); // add character count to message payload
-    bool checkCharCount(std::string &msg); // check whether character count is correct
+    virtual void initialize();                                 // initialize the node data members and read its messages
+    virtual void handleMessage(cMessage *msg);                 // handle any received message
+    virtual void generateMsgs();                               // read the messages from out file to send them through the hub
+    void sendMsg();                                            // send a message to the hub to navigate it to the selected receiver
+    void post_receive_ack(cMessage *msg);                      // slide the window
+    void post_receive_frame(cMessage *msg);                    // schedule ack
+    std::string addCharCount(std::string msg);                 // add character count to message payload
+    bool checkCharCount(std::string &msg);                     // check whether character count is correct
     std::string computeHamming(std::string s, int &to_pad);
     std::string decodeHamming(std::string s, int padding);
 

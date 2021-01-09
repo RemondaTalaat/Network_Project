@@ -16,63 +16,83 @@
 #include "Hub.h"
 
 Define_Module(Hub);
-
+/**
+ * function used to generate the sessions table which consists of pairs of nodes randomly generated.
+ */
 void Hub::generatePairs()
 {
 
     int node1,node2;
-    // loop over nodes twice
+
+    // loop over the nodes square times
     for(int i =0; i < this->n*this->n; ++i) {
 
-        // pick random node to be the sender
+        // pick random node to be the first node
         node1 = uniform(0, this->n);
         // push it in senders vector
         this->senders.push_back(node1);
 
-        // pick random node not equal the sender node to be the receiver
+        // pick random node not equal the first one to be the second node
         do {
             node2 = uniform(0, this->n);
+
         } while(node2 == node1);
 
         // push it to the receivers vector
         this->receivers.push_back(node2);
     }
 
-    for(int i = 0; i < this->n*this->n; ++i) {
+    // Debugging prints
+    /*for(int i = 0; i < this->n*this->n; ++i) {
         EV <<  "senders[" << i << "] = " << this->senders[i] <<endl;
         EV << " Receivers[" << i << "] = " << this->receivers[i] <<endl;
-    }
+    }*/
 
 }
 
+/**
+ * function used to initialize the hub data members.
+ */
 void Hub::initialize()
 {
+    // read the number of nodes
     this->n = par("n");
+
+    // initially not refer to the table
     this->indexer = -1;
-    //generate the pairs table
+
+    //generate the nodes pairs table
     generatePairs();
+
     // initialize statistics gathering variables
     initializeStats();
-    // initialize the sender and receiver nodes
+    // initialize the first session nodes to the first pair in the table
     this->sender = this->senders[0];
     this->receiver = this->receivers[0];
+
+    // send a start session message to start a new session
     this->start_session = new cMessage("");
     this->start_session->setKind(1);
     scheduleAt(simTime() + par("session_time"), this->start_session); // session time default value = 15 second
+
+    // send a statistical message to print statistics of the system every 3 minutes
     this->print_stats = new cMessage("");
     this->print_stats->setKind(2);
     scheduleAt(simTime() + par("stats_time"), this->print_stats); // stats print time default value = 180 second
 }
-
+/**
+ * start new session by selecting the ordered pairs from table and send them messages to start.
+ */
 void Hub::startSession()
 {
 
     // advance the indexer to schedule the next pairs
     this->indexer ++;
+    // when reaching end of the table reset the indexer
     if(this->indexer == this->senders.size()){
         this->indexer = 0;
     }
-
+    // set the session nodes
     this->sender = this->senders[this->indexer];
     this->receiver = this->receivers[this->indexer];
 
@@ -81,6 +101,7 @@ void Hub::startSession()
     cMessage* msg = new cMessage("sender");
     msg ->setKind(4);
     send(msg, "outs", sender);
+
     cMessage* msg2 = new cMessage("receiver");
     msg2 ->setKind(4);
     send(msg2, "outs", receiver);
@@ -90,19 +111,25 @@ void Hub::startSession()
     scheduleAt(simTime() + par("session_time") , this->start_session);
 }
 
-// return int represent what to do with the message
-// 0 -> lose message
-// 1 -> delayed
-// 2 -> delayed duplicate
-// 3 -> duplicate
-// 4 -> send the message as is
-// any modification is added to the msg in this function so no need for case for modification
+/**
+ * mimic the channel effect by choosing an action to do with the message, lose it or delay it or neither of them.
+ * then modify a random bit in the message if the probability of modification > 50% ( can be modified from monetpp.ini file )
+ * then duplicate it if the probability of duplication > 50% ( can be modified from omnetpp.ini file )
+ @param msg : the message received as is.
+ @return int represent the action to be applied to the message as following :
+     0 -> message lost.
+     1 -> delayed.
+     2 -> delayed + duplicated.
+     3 -> duplicated.
+     4 -> send it as is.
+*/
 int Hub::applyNoise(Imessage_Base * msg) {
-    // apply any noise to the node
 
+    // generate random action from inverted actions ( losing , delaying , none )
     int choice =uniform(0,3);  // 0 -> lose , 1 -> do nothing , 2 -> delayed
-    EV << "choice = " << choice <<endl;
-    // in case of lose return 0 so the message deleted
+    //EV << "choice = " << choice <<endl;
+
+    // in case of 0 means lose the message so return 0 so the message deleted
     if (choice == 0)
     {
         EV << "Message lost !" <<endl;
@@ -111,56 +138,76 @@ int Hub::applyNoise(Imessage_Base * msg) {
 
     // calculate the probability to modify a message
     int prob_modify  = uniform(0,1)*10;
-    EV << "prob modification = " << prob_modify <<endl;
+    //EV << "prob modification = " << prob_modify <<endl;
+
     // in case of message modification
     if(prob_modify > par("prob_modification").doubleValue()) {
 
+        // read the message payload
         std::string s = msg ->getMessage_payload();
+        // print payload before modification to assure modification happens
         EV << " message before modification " << s << endl;
+        // pick random char from the message payload to modify it
         int size = s.size();
         int random_var = uniform(0, size);
+        // convert that char to its binary representation
         std::bitset<8> bits(s[random_var]);
+        // pick random bit in that char to modify
         EV << bits.to_string() << endl;
         int random_bit = uniform(0,8);
+        //invert the selected bit
         bits[random_bit] = ! bits[random_bit];
         EV << bits.to_string() << endl;
+        // convert the binary representation to char after modification
         s[random_var] = (char)bits.to_ulong();
         std::stringstream ss;
         ss << s;
+        // update the payload to the modified one
         msg->setMessage_payload(ss.str().c_str());
+        // print payload after modification to assure modification happens
         EV << " message after modification " << s << endl;
-
-        EV << " Message got modified !" << endl;
 
     }
 
+    // calculate the probability to duplicate the message
     int prob_duplicate  = uniform(0,1)*10;
 
-    EV << "prob duplication = " << prob_duplicate <<endl;
+    //EV << "prob duplication = " << prob_duplicate <<endl;
 
+    // in case of message duplication
     if (prob_duplicate > par("prob_duplication").doubleValue()){
         EV << "message duplicated" <<endl;
+        // check if the message also delayed return 2 else return 3
         if (choice == 2) {
             return 2;
         } else {
             return 3;
         }
     }
+    // if the message not duplicated but delayed return 1
     if (choice == 2) {
         return 1;
     }
-    EV << " message send normally" <<endl;
+    // if none return 4
     return 4;
 
 }
 
+/**
+ *handle any message receiving logic
+ @param msg : message received from the connected gates.
+
+*/
 void Hub::handleMessage(cMessage *msg)
 {
 
+    // self messages to end current session and start new one or print system statistics
     if (msg->isSelfMessage()) {
+        // in case of session starting
         if (msg->getKind() == 1) {
-            // when receiving a self message of kind 1 allocate new session for 2 random nodes to communicate with each other
+            // allocate new session for 2 random nodes to communicate with each other
             startSession();
+         // in case of printing system statistics
         } else {
             // when receiving a self message of kind 2 print statistics (collective)
             this->printStats(true);
@@ -170,22 +217,26 @@ void Hub::handleMessage(cMessage *msg)
     } else{
         // normal message process it normally
         try {
-            // get the message sender
+            // cast the message
             Imessage_Base * rmsg = check_and_cast<Imessage_Base *> (msg);
+            // navigate the message to its corresponding receiver
             parseMessage(rmsg);
         }
         // end session message
         catch(...) {
             EV << "session ends early and starting a new one now" <<endl;
+            //cancel the end session event and start a new session now
             cancelAndDelete(msg);
             cancelEvent(this->start_session);
             startSession();
-            // do something here to end the current session and start new one
         }
     }
 }
 
-
+/**
+ * navigate the message from its sender to its corresponding receivers adding channel noise effect.
+ @param msg : message received from the connected gates.
+*/
 void Hub::parseMessage(Imessage_Base * msg) {
     // get the message sender
     int msg_sender = msg->getSenderModule()->getIndex();
@@ -214,10 +265,12 @@ void Hub::parseMessage(Imessage_Base * msg) {
     }
     // apply the transmission noise
     int noise = applyNoise(msg);
-    int delay = exponential( par("lambda_delay").doubleValue());
+    // calculate the amount of delay
+    int delay = exponential( par("mean_delay").doubleValue());
+    EV << " delay time = " << delay <<endl;
     std::string msg_payload = msg->getMessage_payload();
-    EV << msg_payload << endl;
-    //send the message
+
+    //select how to send the message based on the noise effect
     switch(noise)
     {
         // lose the message

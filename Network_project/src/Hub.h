@@ -32,12 +32,18 @@ using namespace omnetpp;
 class Hub : public cSimpleModule
 {
   private:
-    int sender;
-    int receiver;
-    double n;
+
+    int sender;                                        // hold the first node in a session
+    int receiver;                                      // hold the second node in a session
+    double n;                                          // total number of nodes connected to the hub
+
+    // session pairs table data members
     std::vector<int> senders {};
     std:: vector<int> receivers {};
-    int indexer;
+    int indexer;                                       // to loop over the table pairs
+
+    cMessage * start_session;                          // the self-message used to start a session
+
     // statistics gathering
     std::vector<std::vector<int>> generated_frames;
     std::vector<std::vector<int>> frame_sizes;
@@ -45,15 +51,19 @@ class Hub : public cSimpleModule
     std::vector<std::vector<int>> is_duplicated;
     std::vector<std::vector<int>> retransmitted_frames;
 
-  protected:
-    virtual void initialize();
-    virtual void handleMessage(cMessage *msg);
-    cMessage * start_session;
     cMessage * print_stats;
-    void generatePairs();
-    void startSession();
-    void parseMessage(Imessage_Base * msg);
-    int applyNoise(Imessage_Base * msg);
+
+  protected:
+    virtual void initialize();                         // initialize the hub data members and generate pairs table
+    virtual void handleMessage(cMessage *msg);         // handle any received message
+
+
+    void generatePairs();                              // generate the pairs of nodes table
+    void startSession();                               // start a new session to navigate their messages
+    void parseMessage(Imessage_Base * msg);            // navigate a received message from its sender to a specific receiver
+    int applyNoise(Imessage_Base * msg);               // mimic the channel noise effect on the message
+
+    // statistics functions
     void initializeStats();
     void updateStats(int node_idx, int seq_num, int frame_size, bool is_dropped, bool is_duplicated);
     void printStats(bool collective);

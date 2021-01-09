@@ -23,11 +23,11 @@
  * <pre>
  * packet Imessage
  * {
- *     \@customize(true);  // see the generated C++ header for more info
- *     int sequence_number;
- *     int pad_length;
- *     int acknowledge;
- *     string message_payload;
+ *     \@customize(true);                   // see the generated C++ header for more info
+ *     int sequence_number;                // message sequence number
+ *     int pad_length;                     // the padding length ( used in hamming )
+ *     int acknowledge;                    // the acknowledge of the last received frame
+ *     string message_payload;             // message content framed by char count
  * }
  * </pre>
  *
@@ -70,13 +70,14 @@ class Imessage_Base : public ::omnetpp::cPacket
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const Imessage_Base&);
     // make constructors protected to avoid instantiation
+
     Imessage_Base(const Imessage_Base& other);
     // make assignment operator protected to force the user override it
     Imessage_Base& operator=(const Imessage_Base& other);
 
   public:
-    virtual ~Imessage_Base();
     Imessage_Base(const char *name=nullptr, short kind=0);
+    virtual ~Imessage_Base();
     virtual Imessage_Base *dup() const override {return new Imessage_Base (*this);}
     virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
