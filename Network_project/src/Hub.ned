@@ -21,7 +21,12 @@ package network_project;
 simple Hub
 {
     parameters:
-        double n = default(4);
+        double n                = default(2);                  // number of nodes
+        double session_time     = default(15);                 // session time (default = 15 second)
+        double stats_time       = default(180);                // statistics print time (default = 180 second (3 mins))
+		double prob_duplication = default(5);                
+		double prob_modification= default(5);
+		double lambda_delay     = default(4.0);                // generate the amount of delay added to the message 
     gates:
         input ins[];
         output outs[];

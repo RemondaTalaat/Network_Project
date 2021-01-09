@@ -7,9 +7,9 @@ import ned.IdealChannel;
 network Star
 {
     parameters:
-        int n = default(5);
+        int s = default(2);
     submodules:
-        nodes[n]: Node ;
+        nodes[s]: Node ;
         hub     : Hub;
     connections: 
        for i=0..sizeof(nodes)-1

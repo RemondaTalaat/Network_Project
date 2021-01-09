@@ -70,15 +70,14 @@ class Imessage_Base : public ::omnetpp::cPacket
     // protected and unimplemented operator==(), to prevent accidental usage
     bool operator==(const Imessage_Base&);
     // make constructors protected to avoid instantiation
-
     Imessage_Base(const Imessage_Base& other);
     // make assignment operator protected to force the user override it
     Imessage_Base& operator=(const Imessage_Base& other);
 
   public:
-    Imessage_Base(const char *name=nullptr, short kind=0);
     virtual ~Imessage_Base();
-    virtual Imessage_Base *dup() const override {return new Imessage_Base(*this);}
+    Imessage_Base(const char *name=nullptr, short kind=0);
+    virtual Imessage_Base *dup() const override {return new Imessage_Base (*this);}
     virtual void parsimPack(omnetpp::cCommBuffer *b) const override;
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 

@@ -23,11 +23,7 @@ simple Node
     parameters:
         // from 0 to 7 (8 combinations) --> window size = 7
         int max_seq = default(3);
-        // max time that if no ack received after, we will resend from the beginning of the window
         int window_resend_timeout = default(5);
-        // max time that if the ack is not sent after, we will send it without piggy backing
-        int ack_send_timeout = default(2);
-
     gates:
         input in;
         output out;

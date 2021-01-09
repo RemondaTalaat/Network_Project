@@ -15,194 +15,213 @@
 
 #include "Node.h"
 #include "Imessage_m.h"
+#include <string>
+#include <cstdlib>
 
 Define_Module(Node);
 
-void Node::initialize(){
-    /*
-    this function generates msgs vector for the node and initializes the window at the beginning of the vector 
-    */
+void Node::initialize()
+{
     this->generateMsgs();
     // initialize
     this->max_seq = par("max_seq");
-    this->S = 0; 
+    this->S  = 0;
     this->Sf = 0;
     this->Sl = std::min(this->Sf + max_seq - 1, int(this->msgs.size())-1);
-    this->R = 0;
+    this->R  = 0;
+    this->ack = -1;
 
-    EV << endl << "Node constructed" << endl;
+    EV << "Node constructed"<<endl;
 
-    this->sendMsg();
-
-    
 }
 
-void Node::handleMessage(cMessage *msg){
-    /*
-    this function is responsible for handling different types of received msgs 
-
-    msg types:
-    1- self-msg with type = 1 : resend from the beginning if its content not acked yet.
-    2- self-msg with type = 2 : send next frame if window is not ended.
-    3- self-msg with type = 3 : send ack without piggy-backing if not sent yet.
-
-    4- out-msg with type = 1 : msg carries ack only.
-    5- out-msg with type = 2 : msg carries frame only.
-    6- out-msg with type = 3 : msg carries ack + frame
-    */
-
-    //if self-msg
+void Node::handleMessage(cMessage *msg)
+{
+    //if self-message
     if (msg->isSelfMessage()) {
-        EV << endl << "self-msg received with type: " << msg->getKind() << endl;
         switch(msg->getKind()) {
 
-            // timeout: check if ack came or not to resend from the beginning of the window
+            // timeout: check if acknowledge came or not to re-send from the beginning of the window
             case 1:
             {
-                EV << endl << "This self-msg tells the node to check if the ack of its content came or not, if not, timeout occurs, so the node should resend from the beginning of the window." << endl;
-                this->post_timeout_window_resend(msg);
+                bool compare = strcmp(msg->getName(), std::to_string(this->Sf).c_str());
+                if(compare == 0) {
+                    EV <<endl<< "Not receiving acknowledge  so go back from the beginning of the window !!" <<endl;
+                    // timeout: no acknowledge came -> re-send
+                    this->S = Sf;
+                }
                 break;
             }
-            
             // send the next frame if there're remaining frames in the window
             case 2:
             {
-                EV << endl << "This self-msg tells the node to continue sending if it doesn't get to the end of the window." << endl;
+                EV << endl << "Send a message normally" << endl;
                 this->sendMsg();
                 break;
             }
-
-            // receeive timeout self-msgs to send ack without piggy backing if not sent yet
-            case 3:
-            {
-                EV << endl << "This self-msg tells the node to check if its content is sent as ack or not, if not, send without piggy-backing" << endl;
-                this->post_timeout_send_ack_only(msg);
-                break;
-            }
-
         }
 
     }
 
-    // if out msg arrived
+    // if out message arrived
     else {
-        EV << endl << "out-msg received with type: " << msg->getKind() << endl;
-        switch(msg->getKind()) {
+        EV << "msg kind " << msg->getKind() <<endl;
+        // frame + acknowledge
+        if (msg->getKind() == 3){
+            EV << "receiving frame and acknowledge" <<endl;
 
-            // ack only
-            case 1:
-            {
-                EV << endl << "This out-msg carries ack only." << endl;
-                this->post_receive_ack(msg);
-                break;
-            }
-            
-            // frame only
-            case 2:
-            {
-                EV << endl << "This out-msg carries frame only." << endl;
-                this->post_receive_frame(msg);
-                break;
-            }
-
-            // frame + ack 
-            case 3:
-            {
-                EV << endl << "This out-msg carries ack + frame (piggy-backing)." << endl;
-                this->post_receive_ack(msg);
-                this->post_receive_frame(msg);
-                break;
-            }
+            this->post_receive_frame(msg);
+            this->post_receive_ack(msg);
 
         }
-    
+        else if (msg->getKind() == 4) {
+            this->sendMsg();
+        }
+
+
+
     }
 
 }
 
-void Node::generateMsgs(){
-    /*
-    this function reads a random file as its msg vector
-    */
+void Node::generateMsgs()
+{
     // read the text file specified to node index
-    std::stringstream ss;
-    ss << getIndex();
-    std::string file_name = "msg_files/" + ss.str() + ".txt";
-    std::string msg;
-    // read all lines into messages buffer
-    std::ifstream file(file_name);
-    while (getline (file, msg)) {
-      this->msgs.push_back(msg);
-    }
-    file.close();
-    // reverse to send messages in order
-    std::reverse(this->msgs.begin(), this->msgs.end());
+        std::stringstream ss;
+        ss << getIndex();
+        std::string file_name = "msg_files/" + ss.str() + ".txt";
+        std::string msg;
+        // read all lines into messages buffer
+        std::ifstream file(file_name);
+        while (getline (file, msg)) {
+          this->msgs.push_back(msg);
+        }
+        //std::reverse(this->msgs.begin(), this->msgs.end());
+        file.close();
 }
 
-void Node::sendMsg(){
-    /*
-    this function is responsible for
-    1- sending frames with acks if piggy-backing is available.
-    2- sending self-msg to resend the window if the sent frame is not acked after a timeout.
-    3- sending self-msg to send the next frame if the window is not ended.
-    */
+void Node::sendMsg()
+{
+    EV << "S_f = "<<this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
+
+    // here may problem arise due to delayed messages
+    if(this->S == int(this->msgs.size())) {
+            // if current S reaches end of messages, terminate
+            cMessage * end_session = new cMessage("end session");
+            send(end_session ,"out");
+            return;
+     }
+
     // check if I reached the end of the window
     if (this->S <= this->Sl){
-        EV << endl << "I can send the next frame as window is not ended." << endl;
-        // send msg referred by S
-        const char* msg_payload = this->msgs[this->S].c_str();
-        Imessage_Base * msg = new Imessage_Base(msg_payload);
+        // send message referred by S
+        // TODO : perform hamming on message payload
+        std::string framed_msg = this->addCharCount(this->msgs[this->S]);
+        //EV << "msg payload = " << framed_msg << endl;
+        const char* msg_payload = framed_msg.c_str();
+        int padding = 0;
+        msg_payload = this->computeHamming(msg_payload, padding).c_str();
+        Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
         msg ->setSequence_number(this->S % (this->max_seq + 1));
         msg ->setMessage_payload(msg_payload);
-
-        // piggy backing frame + ack
-        if (!this->acks_to_be_sent.empty()){
-            EV << endl << "GREAT, there're acks available to be piggy backed with the frame. Bandwidth is SAVED!" << endl;
-            int ack = this->acks_to_be_sent.front();
-            msg->setAcknowledge(ack);
-            msg->setKind(3);
-
-            // delete the sent acknowledge from the buffering queue
-            this->acks_to_be_sent.pop();
-        }
-
-        // frame only
-        else{
-            EV << endl << "No available acks to be piggy backed, send the frame alone." << endl;
-            msg->setKind(2);
-        }
-        
-        // msg is ready -> send it
+        msg->setAcknowledge(this->ack);
+        msg->setKind(3);
+        msg->setPad_length(padding);
         send(msg,"out");
 
-        EV << endl << "I sent the frame of index " << this->S << " ,whose content is " << this->msgs[this->S] << endl;
-
-        EV << endl << "send myself a msg to resend starting from this current frame, if it isn't acked" << endl;
-        // send self-msg including sent_msg_seq_num to myself as a timer to re-send if it's not acked
+        // send self-message including sent_msg_seq_num to myself as a timer to re-send if S-f is still referring to this message
         cMessage * time_out_self_msg = new cMessage(std::to_string(this->S).c_str());
         time_out_self_msg->setKind(1);
         scheduleAt(simTime() + par("window_resend_timeout") , time_out_self_msg);
 
-        // increment S
+        EV << endl << "message sent successfully !" <<endl;
+        EV << "S_f = "<<this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
+
         this->S++;
+
+
     }
-    
-    // send self-msg to send a new frame after a timeout
+
+    // send self-message to send the next frame
     cMessage * send_next_self_msg = new cMessage("");
     send_next_self_msg->setKind(2);
     scheduleAt(simTime() + 1 , send_next_self_msg);
 
 }
 
-string Node::computeHamming(string s, int &to_pad){
+void Node::post_receive_ack(cMessage *msg){
+    EV << endl <<"S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << ", message acknowledge = " << (((Imessage_Base *)msg)->getAcknowledge()) << endl;
+
+    //initial frame sending
+    if (((Imessage_Base *)msg)->getAcknowledge() == -1) {
+        return;
+    }
+    while(this->Sf <= (((Imessage_Base *)msg)->getAcknowledge()))
+    {
+        this->Sf ++;
+        //this->reset_R ++;
+        //this->reset_ack ++;
+
+    }
+    this->Sl = std::min(this->Sf + max_seq - 1, int(this->msgs.size())-1);
+    EV << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << endl;
+}
+
+void Node::post_receive_frame(cMessage *msg){
+    // check in-order receive
+
+    int received_frame_seq_num = ((Imessage_Base *)msg)->getSequence_number();
+    if (received_frame_seq_num == this->R){
+        //save the acknowledge to be sent
+        this->ack = R;
+
+        this->R++;
+
+        const char * msg_payload = ((Imessage_Base *)msg)->getMessage_payload();
+        std::string payload = this->decodeHamming(msg_payload, ((Imessage_Base *)msg)->getPad_length()).c_str();
+        EV << " message payload after decode hamming " << payload << endl;
+        bool check = this->checkCharCount(payload);
+        if (check) {
+            EV << "message char count right !!" <<endl;
+        } else {
+            EV << " message char count wrong !" << endl;
+        }
+        EV << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
+    }
+}
+
+// ------------------------------------- char count encode / decode ----------------------------------------------
+
+std::string Node::addCharCount(std::string msg) {
+    // add character count to message payload (framing)
+    uint8_t msg_size = (uint8_t) msg.size();
+    std::string framed_msg = "";
+    framed_msg += msg_size;
+    framed_msg += msg;
+    return framed_msg;
+}
+
+bool Node::checkCharCount(std::string &msg) {
+    // check whether character count is correct
+    int msg_size = (int)msg[0];
+    msg.erase(msg.begin());
+    if (msg_size == msg.size()) {
+        return true;
+    }
+    return false;
+}
+
+// ------------------------------------------- hamming encode / decode --------------------------------------------
+
+std::string Node::computeHamming(std::string s, int &to_pad){
     int str_length = s.length();
     int m = 8 * str_length;
     int r = 1;
     while(m + r + 1 > pow(2 , r)){
         r++;
     }
-    unordered_map<int, bool> parity_bits_exist;
-    vector<int> parity_bits;
+    std::unordered_map<int, bool> parity_bits_exist;
+    std::vector<int> parity_bits;
     for(int i = 0 ; i < r ; i++){
         parity_bits.push_back(pow(2,i));
         parity_bits_exist[pow(2,i)] = 1;
@@ -210,13 +229,13 @@ string Node::computeHamming(string s, int &to_pad){
 
 
     int total_bits = m + r;
-    vector<bool> bits(total_bits+1);
+    std::vector<bool> bits(total_bits+1);
     for(int i = 0 ; i < bits.size(); i++)
         bits[i] = 0;
 
     int curr_idx = 1;
     for(int i = 0 ; i < str_length; i++){
-        bitset<8> char_bits(s[i]);
+        std::bitset<8> char_bits(s[i]);
         for(int j = 7; j >= 0; j--){
             if(!parity_bits_exist[curr_idx]){
                 bits[curr_idx++] = char_bits[j];
@@ -246,7 +265,7 @@ string Node::computeHamming(string s, int &to_pad){
     }
 
 
-    string result = "";
+    std::string result = "";
 
     if(total_bits % 8 != 0){
         to_pad = 8 - (total_bits % 8);
@@ -255,7 +274,7 @@ string Node::computeHamming(string s, int &to_pad){
         bits.push_back(0);
 
     for(int i = 1; i < bits.size(); i += 8){
-        bitset<8> char_bits;
+        std::bitset<8> char_bits;
         for(int j = 0; j < 8 ; j++)
             char_bits[j] = bits[i+7-j];
         result += (char)char_bits.to_ulong();
@@ -263,28 +282,28 @@ string Node::computeHamming(string s, int &to_pad){
     return result;
 }
 
-string Node::decodeHamming(string s, int padding){
+std::string Node::decodeHamming(std::string s, int padding){
     int str_length = s.length();
     int mr = 8 * str_length - padding;
     int r = 1;
     while(mr + 1 > (pow(2,r))){
         r++;
     }
-    unordered_map<int, bool> parity_bits_exist;
-    vector<int> parity_bits;
+    std::unordered_map<int, bool> parity_bits_exist;
+    std::vector<int> parity_bits;
     for(int i = 0 ; i < r ; i++){
         parity_bits.push_back(pow(2,i));
         parity_bits_exist[pow(2,i)] = 1;
     }
 
     int total_bits = mr;
-    vector<bool> bits(total_bits + padding + 1);
+    std::vector<bool> bits(total_bits + padding + 1);
     for(int i = 0 ; i < bits.size(); i++)
         bits[i] = 0;
 
     int curr_idx = 1;
     for(int i = 0 ; i < str_length; i++){
-        bitset<8> char_bits(s[i]);
+        std::bitset<8> char_bits(s[i]);
         for(int j = 7; j >= 0; j--){
             bits[curr_idx++] = char_bits[j];
         }
@@ -292,7 +311,7 @@ string Node::decodeHamming(string s, int padding){
 
 
 
-    vector<bool> parity_vals(r);
+    std::vector<bool> parity_vals(r);
 
     for(int i = 0 ; i < parity_bits.size() ; i++){
         int curr_parity = parity_bits[i];
@@ -301,7 +320,7 @@ string Node::decodeHamming(string s, int padding){
         int count_ones = 0;
         for(int j = curr_parity; j <= total_bits; j++){
             if(take){
-                if(j != curr_parity)    
+                if(j != curr_parity)
                     count_ones+=bits[j];
             }
             if(++processed == curr_parity){
@@ -321,7 +340,7 @@ string Node::decodeHamming(string s, int padding){
 
     bits[wrong_bit] = !bits[wrong_bit];
 
-    vector<bool> msg_bits(mr - r);
+    std::vector<bool> msg_bits(mr - r);
     curr_idx = 0;
 
     for(int i = 1; i < bits.size(); i++){
@@ -329,117 +348,20 @@ string Node::decodeHamming(string s, int padding){
             break;
         if(!parity_bits_exist[i]){
             msg_bits[curr_idx++] = bits[i];
-        }  
-  
+        }
+
     }
 
 
-    string result = "";
+    std::string result = "";
 
 
     for(int i = 0; i < msg_bits.size(); i += 8){
-        bitset<8> char_bits;
+        std::bitset<8> char_bits;
         for(int j = 0; j < 8 ; j++){
             char_bits[j] = msg_bits[i+7-j];
         }
         result += (char)char_bits.to_ulong();
     }
     return result;
-}
-
-void Node::cirInc()
-{
-    this->S++;
-    // if (this->S > this->Sl){
-    //     this->S = 0;
-    // }
-
-}
-void Node::post_receive_ack(cMessage *msg){
-    /*
-    this function slide the window using cumulative acknowledge if there is an ack received.
-    */
-    EV << endl << "Ack on frame with seq_num = " << ((Imessage_Base *)msg)->getAcknowledge() << " is received, slide the window now!" << endl;
-    EV << endl << "Window before sliding has Sf = " << this->Sf << " and Sl = " << this->Sl << endl;
-    // slide the window
-    while(this->Sf % (this->max_seq + 1) != (((Imessage_Base *)msg)->getAcknowledge())){
-        this->Sf ++;
-    }
-    this->Sf ++;
-    this->Sl = std::min(this->Sf + max_seq - 1, int(this->msgs.size())-1);
-    EV << endl << "Window after sliding has Sf = " << this->Sf << " and Sl = " << this->Sl << endl;
-}
-
-void Node::post_receive_frame(cMessage *msg){
-    /*
-    this function is called after receiving a frame and responsible for checking if the received frame is in-order and correct without errors
-
-    - if yes
-        1- add the ack in the buffer to be acked as soon as possible (with piggy-backing if available) 
-        2- send self-msg as a timeout to send the ack alone without piggy backing if it is not sent yet (i.e. still in the buffer)
-        3- increment the expected next frame to be received
-
-    - if not : SILENT
-    */
-    // check inorder receive
-    int received_frame_seq_num = ((Imessage_Base *)msg)->getSequence_number();
-    EV << endl << "a frame with seq_num = " << received_frame_seq_num << " is received" << endl;
-
-    if (received_frame_seq_num == this->R){
-        // TODO: check errors
-        EV << endl << "the frame is in-order" << endl;
-        // add the ack to the buffer
-        this->acks_to_be_sent.push(received_frame_seq_num);
-        
-        // add a self-msg as a timeout that after it the ack will be sent alone -> no piggy backing
-        cMessage * ack_time_out_self_msg = new cMessage(std::to_string(received_frame_seq_num).c_str());
-        ack_time_out_self_msg->setKind(3);
-        scheduleAt(simTime() + par("ack_send_timeout") , ack_time_out_self_msg);  
-
-        // increase next frame expected to be received (circular increment)  
-        this->R++;
-        this->R = this->R % (this->max_seq + 1);
-        return;
-    }
-    EV << endl << "the frame is out-of-order, I am silent!" << endl;
-}
-
-void Node::post_timeout_window_resend(cMessage *msg){
-    /*
-    this function is called if a self-msg with type = 1 is received
-    resend from the beginning of the window if the msg's content is not acked yet.
-    */
-    bool compare = strcmp(msg->getName(), std::to_string(this->Sf).c_str());
-    if(compare == 0) {
-        EV << endl << "No ack came, TIMEOUT!!!, RESEND!!!" << endl;
-        // timeout: no ack came -> resend
-        this->S = Sf;
-    }
-}
-
-// no piggy backing
-void Node::post_timeout_send_ack_only(cMessage *msg){
-    /*
-    this function is called if a self-msg with type = 3 is received
-    send ack without piggy-backing if not sent yet.
-    */
-    // check if the received frame to be acknowledged is the buffered frame to be acknowledged (i.e. not sent yet)
-    bool compare = strcmp(msg->getName(), std::to_string(this->acks_to_be_sent.front()).c_str());
-    
-    if(compare == 0) {
-        // ack is not sent -> send it without piggy backing
-        EV << endl << "Ack of frame with seq_num = " << this->acks_to_be_sent.front() << " wasn't piggy-backed ever and TIMEOUT arose. SEND it alone! Bandwidth wasn't SAVED!" << endl;
-        // send seq number of the frame to be acknowledged (top of the queue)
-        int ack = this->acks_to_be_sent.front();
-        const char* msg_payload = std::to_string(ack).c_str();
-        Imessage_Base * msg = new Imessage_Base(msg_payload);
-        msg->setMessage_payload(msg_payload);
-        msg->setAcknowledge(ack);
-        msg->setKind(1);
-        send(msg,"out"); 
-            
-        // delete the sent acknowledge from the buffering queue
-        this->acks_to_be_sent.pop();
-        
-    } 
 }

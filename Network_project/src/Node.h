@@ -20,17 +20,15 @@
 #include <bitset>
 #include <vector>
 #include <string>
-#include <queue>
 #include <cstdlib>
 #include <fstream>
-#include <algorithm>
 
 #include <unordered_map>
 
 
+//#include <algorithm>
 
 using namespace omnetpp;
-using namespace std;
 
 /**
  * TODO - Generated class
@@ -40,17 +38,13 @@ class Node : public cSimpleModule
   private:
     std::vector<std::string> msgs {};
 
-    int max_seq; // from node.ned - max seq number 
+    int max_seq;                        // from node.ned - max seq number
 
-    int S; // sequence number of the recently sent frame
-    int Sf; // sequence number of the first frame in the window
-    int Sl;  // sequence number of the last frame in the window
-    int R;  // sequence number of the frame expected to be received
-    
-    int ack_buffer; // buffer that indicates next frame to send ack on // seq num of tha frame to be acknowledged
-
-    std::queue<int> acks_to_be_sent;
-
+    int S;                              // sequence number of the recently sent frame
+    int Sf;                             // sequence number of the first frame in the window
+    int Sl;                             // sequence number of the last frame in the window
+    int R;                              // sequence number of the frame expected to be received
+    int ack;
 
 
 
@@ -59,16 +53,13 @@ class Node : public cSimpleModule
     virtual void handleMessage(cMessage *msg);
     virtual void generateMsgs();
     void sendMsg();
-    virtual void cirInc();
-    string computeHamming(string s, int &to_pad);
-    string decodeHamming(string s, int padding);
     void post_receive_ack(cMessage *msg); // slide the window
     void post_receive_frame(cMessage *msg); // schedule ack
-    void post_timeout_window_resend(cMessage *msg);
-    void post_timeout_send_ack_only(cMessage *msg);
+    std::string addCharCount(std::string msg); // add character count to message payload
+    bool checkCharCount(std::string &msg); // check whether character count is correct
+    std::string computeHamming(std::string s, int &to_pad);
+    std::string decodeHamming(std::string s, int padding);
 
-
-  
 
 };
 

@@ -18,7 +18,12 @@
 
 #include <omnetpp.h>
 #include <bitset>
-
+#include <vector>
+#include <algorithm>
+#include <numeric>
+#include <string>
+#include <cstdlib>
+#include "Imessage_m.h"
 using namespace omnetpp;
 
 /**
@@ -29,10 +34,29 @@ class Hub : public cSimpleModule
   private:
     int sender;
     int receiver;
+    double n;
+    std::vector<int> senders {};
+    std:: vector<int> receivers {};
+    int indexer;
+    // statistics gathering
+    std::vector<std::vector<int>> generated_frames;
+    std::vector<std::vector<int>> frame_sizes;
+    std::vector<std::vector<int>> is_dropped;
+    std::vector<std::vector<int>> is_duplicated;
+    std::vector<std::vector<int>> retransmitted_frames;
 
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
+    cMessage * start_session;
+    cMessage * print_stats;
+    void generatePairs();
+    void startSession();
+    void parseMessage(Imessage_Base * msg);
+    int applyNoise(Imessage_Base * msg);
+    void initializeStats();
+    void updateStats(int node_idx, int seq_num, int frame_size, bool is_dropped, bool is_duplicated);
+    void printStats(bool collective);
 };
 
 #endif
