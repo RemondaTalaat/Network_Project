@@ -39,6 +39,9 @@ class Node : public cSimpleModule
     int R;                               // sequence number of the frame expected to be received
     int ack;                             // acknowledge of the last received frame
 
+    bool is_inactive;                    // define whether the node is inactive
+    bool is_dead;                        // define whether the node is dead
+
   protected:
     virtual void initialize();                                 // initialize the node data members and read its messages
     virtual void handleMessage(cMessage *msg);                 // handle any received message

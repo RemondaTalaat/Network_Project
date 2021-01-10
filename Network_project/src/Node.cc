@@ -26,6 +26,9 @@ void Node::initialize()
     this->generateMsgs();
     // read the window size from ini file
     this->max_seq = par("max_seq");
+    // initialize node as inactive and alive
+    this->is_inactive = true;
+    this->is_dead = false;
     // initialize the swapping window pointers
     this->S  = 0;
     this->Sf = 0;
@@ -34,7 +37,7 @@ void Node::initialize()
     this->R  = 0;
     // initialized the received acknowledge to -1 ( no thing received yet)
     this->ack = -1;
-    EV << "Node constructed"<<endl;
+    EV << " node constructed !"<<endl;
 }
 /**
  * function is responsible for handling different types of received msgs
@@ -47,49 +50,65 @@ void Node::initialize()
  */
 void Node::handleMessage(cMessage *msg)
 {
-    //in case of self-message
-    if (msg->isSelfMessage())
+    // check whether node is alive
+    if (!this->is_dead)
     {
-        // check the type of the message
-        switch(msg->getKind()) 
+        //in case of self-message
+        if (msg->isSelfMessage() && !this->is_inactive)
         {
-            // timeout: check if acknowledge came or not to re-send from the beginning of the window
-            case 1:
+            // check the type of the message
+            switch(msg->getKind()) 
             {
-                bool compare = strcmp(msg->getName(), std::to_string(this->Sf).c_str());
-                if(compare == 0)
+                // timeout: check if acknowledge came or not to re-send from the beginning of the window
+                case 1:
                 {
-                    EV <<endl<< "Not receiving acknowledge  so go back from the beginning of the window !!" <<endl;
-                    // timeout: no acknowledge came -> re-send
-                    this->S = Sf;
+                    bool compare = strcmp(msg->getName(), std::to_string(this->Sf).c_str());
+                    if(compare == 0)
+                    {
+                        EV << endl << " not receiving acknowledge -> go back from the beginning of the window !" <<endl;
+                        // timeout: no acknowledge came -> re-send
+                        this->S = this->Sf;
+                    }
+                    break;
                 }
-                break;
+                // send the next frame if there're remaining frames in the window
+                case 2:
+                {
+                    this->sendMsg();
+                    break;
+                }
             }
-            // send the next frame if there're remaining frames in the window, or end session if no frames remaining
-            case 2:
+        }
+        // in case of out-message arrived
+        else
+        {
+            // during session time receiving frame + ack
+            if (msg->getKind() == 3 && !this->is_inactive)
             {
-                this->sendMsg();
-                break;
+                this->post_receive_frame(msg);
+                this->post_receive_ack(msg);
             }
-        }
-    }
-    // in case of out-message arrived
-    else
-    {
-        // during session time receiving frame + ack
-        if (msg->getKind() == 3)
-        {
-            this->post_receive_frame(msg);
-            this->post_receive_ack(msg);
-        }
-        // start session message so start sending the messages
-        else if (msg->getKind() == 4)
-        {
-            EV <<  "previous R value = " << this->R <<endl;
-            this ->ack = -1;
-            this -> R = std::stoi(msg->getName());
-            EV << "new R value = " << this->R <<endl;
-            this->sendMsg();
+            // start session message so start sending the messages
+            else if (msg->getKind() == 4)
+            {
+                EV << " entering a new session" << endl;
+                this->is_inactive = false;
+                EV <<  " previous R value = " << this->R <<endl;
+                this ->ack = -1;
+                this -> R = std::stoi(msg->getName());
+                EV << " new R value = " << this->R <<endl;
+                this->sendMsg();
+            }
+            // end session message to change to inactive state
+            else if (msg->getKind() == 5 && !this->is_inactive)
+            {
+                EV << " exiting current session" << endl;
+                this->is_inactive = true;
+                this->S = this->Sf;
+                cMessage* msg = new cMessage(std::to_string(this->Sf).c_str());
+                msg ->setKind(4);
+                send(msg, "out");
+            }
         }
     }
 }
@@ -116,14 +135,6 @@ void Node::generateMsgs()
  */
 void Node::sendMsg()
 {
-    // when messages all sent send end session message to the hub
-    if(this->S == int(this->msgs.size()))
-    {
-        // if current S reaches end of messages, terminate
-        cMessage * end_session = new cMessage("end session");
-        send(end_session ,"out");
-        return;
-    }
     // send message referred by S if S stills in the window
     if (this->S <= this->Sl)
     {
@@ -147,9 +158,9 @@ void Node::sendMsg()
         cMessage * time_out_self_msg = new cMessage(std::to_string(this->S).c_str());
         time_out_self_msg->setKind(1);
         scheduleAt(simTime() + par("window_resend_timeout") , time_out_self_msg);
-        EV << endl << "message sent successfully !" <<endl;
+        EV << endl << " message sent successfully !" <<endl;
         // print the window pointers status after sending the message
-        EV << "S_f = "<<this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
+        EV << " S_f = "<<this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
         this->S++;
     }
     // send self-message to send the next frame after 1 second
@@ -174,6 +185,12 @@ void Node::post_receive_ack(cMessage *msg)
         this->Sf ++;
     }
     this->Sl = std::min(this->Sf + max_seq - 1, int(this->msgs.size())-1);
+    // if acknowledge is the last sequence number then the node is dead
+    if (((Imessage_Base *)msg)->getAcknowledge() == int(this->msgs.size())-1)
+    {
+        EV << " node " << getIndex() << " is dead!" << endl;
+        this->is_dead = true;
+    }
     // print the new window pointers status( for debugging )
     EV << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << endl;
 }
@@ -203,7 +220,7 @@ void Node::post_receive_frame(cMessage *msg)
         bool check = this->checkCharCount(payload);
         if (check)
         {
-            EV << "message char count right !!" <<endl;
+            EV << " message char count right !" <<endl;
         }
         else
         {

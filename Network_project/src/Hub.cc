@@ -41,8 +41,8 @@ void Hub::generatePairs()
     // Debugging prints
     /*for(int i = 0; i < this->n*this->n; ++i) 
     {
-        EV <<  "senders[" << i << "] = " << this->senders[i] <<endl;
-        EV << " Receivers[" << i << "] = " << this->receivers[i] <<endl;
+        EV << " senders[" << i << "] = " << this->senders[i] <<endl;
+        EV << " receivers[" << i << "] = " << this->receivers[i] <<endl;
     }*/
 }
 /**
@@ -55,6 +55,9 @@ void Hub::initialize()
 
     // initially not refer to the table
     this->indexer = -1;
+
+    // initially start a new session
+    this->is_session = true;
 
     //generate the nodes pairs table
     generatePairs();
@@ -72,10 +75,14 @@ void Hub::initialize()
         this->last_sent_frames.push_back(0);
     }
 
-    // send a start session message to start a new session
+    // define the start session self-message
     this->start_session = new cMessage("");
     this->start_session->setKind(1);
-    scheduleAt(simTime() + par("session_time"), this->start_session); // session time
+
+    // define and send a specific message for the start of the first session
+    cMessage * first_session_msg = new cMessage("");
+    first_session_msg->setKind(6);
+    scheduleAt(simTime() + par("session_time"), first_session_msg); // session time
 
     // send a statistical message to print statistics of the system
     this->print_stats = new cMessage("");
@@ -105,7 +112,7 @@ void Hub::startSession()
     msg2 ->setKind(4);
     send(msg2, "outs", receiver);
     // schedule the next session if none of the nodes finishes during the session time
-    EV << ". Scheduled a new session after " << par("session_time").doubleValue()  << "s" << endl;
+    EV << " scheduled a new session after " << par("session_time").doubleValue()  << "s" << endl;
     scheduleAt(simTime() + par("session_time") , this->start_session);
 }
 /**
@@ -127,7 +134,7 @@ int Hub::applyNoise(Imessage_Base * msg)
     // in case of 0 means lose the message so return 0 so the message deleted
     if (choice == 0)
     {
-        EV << "Message lost !" <<endl;
+        EV << " message lost !" << endl;
         return 0;
     }
     // calculate the probability to modify a message
@@ -164,7 +171,7 @@ int Hub::applyNoise(Imessage_Base * msg)
     // in case of message duplication
     if (prob_duplicate > par("prob_duplication").doubleValue())
     {
-        EV << "message duplicated" <<endl;
+        EV << " message duplicated !" <<endl;
         // check if the message also delayed return 2 else return 3
         if (choice == 2)
         {
@@ -192,40 +199,62 @@ void Hub::handleMessage(cMessage *msg)
     // self messages to end current session and start new one or print system statistics
     if (msg->isSelfMessage())
     {
-        // in case of session starting
+        // in case of session ending
         if (msg->getKind() == 1)
         {
-            // allocate new session for 2 random nodes to communicate with each other
-            startSession();
+            // send session timeout to the current two nodes
+            EV << " ending current session !" << endl;
+            EV << " sending termination to the nodes " << endl;
+            cMessage* msg1 = new cMessage("end session");
+            msg1->setKind(5);
+            send(msg1, "outs", this->sender);
+            cMessage* msg2 = new cMessage("end session");
+            msg2->setKind(5);
+            send(msg2, "outs", this->receiver);
         
         }
         // in case of printing system statistics
-        else
+        else if (msg->getKind() == 2)
         {
             // when receiving a self message of kind 2 print statistics (collective)
             this->printStats(true);
             scheduleAt(simTime() + par("stats_time"), this->print_stats);
         }
-     // receiving a message from node
+        // in case of starting the first session
+        else if (msg->getKind() == 6)
+        {
+            // start the first session
+            startSession();
+        }
     }
+    // receiving a message from node
     else
     {
         // normal message process it normally
-        try
+        if (msg->getKind() == 3)
         {
             // cast the message
             Imessage_Base * rmsg = check_and_cast<Imessage_Base *> (msg);
             // navigate the message to its corresponding receiver
             parseMessage(rmsg);
         }
-        // end session message
-        catch(...)
+        else if (msg->getKind() == 4)
         {
-            EV << "session ends early and starting a new one now" <<endl;
-            //cancel the end session event and start a new session now
-            cancelAndDelete(msg);
-            cancelEvent(this->start_session);
-            startSession();
+            // save last acknowledged frame for each node
+            int msg_sender = msg->getSenderModule()->getIndex();
+            EV << " node " << msg_sender << " stopped at sequence number = " << msg->getName() << endl;
+            // set last acknowledged sequence number of the node
+            this->last_sent_frames[msg_sender] = std::stoi(msg->getName());
+            // check whether to start the session or not
+            if (this->is_session)
+            {
+                this->is_session = false;
+            }
+            else
+            {
+                this->is_session = true;
+                startSession();
+            }
         }
     }
 }
@@ -238,9 +267,9 @@ void Hub::parseMessage(Imessage_Base * msg)
     // get the message sender
     int msg_sender = msg->getSenderModule()->getIndex();
     // logs for debugging
-    EV << " the message sender id = "<< msg_sender << endl;
-    EV << " the hub sender id = " << sender << endl;
-    EV << " the hub receiver id = " << receiver << endl;
+    EV << " message sender id = "<< msg_sender << endl;
+    EV << " hub sender id = " << sender << endl;
+    EV << " hub receiver id = " << receiver << endl;
     // if a message was received from previous session ignore it
     if (msg_sender != this->sender && msg_sender != this->receiver)
     {
@@ -276,7 +305,7 @@ void Hub::parseMessage(Imessage_Base * msg)
         // delayed , delayed and modified
         case 1:
         {
-            EV <<  " message delayed"  <<endl;
+            EV <<  " message delayed !"  <<endl;
             this->updateStats(msg_sender, msg->getSequence_number(), msg_payload.size(), false, false);
             sendDelayed(msg, delay, "outs", msg_receiver);
             break;
@@ -284,7 +313,7 @@ void Hub::parseMessage(Imessage_Base * msg)
         // delayed duplicate , delayed duplicate and modified
         case 2:
         {
-            EV << "message delayed " <<endl;
+            EV << " message delayed !" <<endl;
             this->updateStats(msg_sender, msg->getSequence_number(), msg_payload.size(), false, true);
             Imessage_Base * msg2 = msg->dup();
             sendDelayed(msg, delay, "outs", msg_receiver);
@@ -424,11 +453,11 @@ void Hub::printStats(bool collective)
         // get efficiency (useful data / all data)
         float efficieny = useful_data/all_data;
         // print collective logs
-        EV << "####################### Collective Statistics #######################" << endl;
-        EV << "Total number of generated frames = " << total_generated << endl;
-        EV << "Total number of dropped frames = " << total_dropped << endl;
-        EV << "Total number of retransmitted frames = " << total_retransmitted << endl;
-        EV << "Percentage of useful transmitted data = " << efficieny*100 << "%" << endl;
+        EV << " ####################### Collective Statistics #######################" << endl;
+        EV << " Total number of generated frames = " << total_generated << endl;
+        EV << " Total number of dropped frames = " << total_dropped << endl;
+        EV << " Total number of retransmitted frames = " << total_retransmitted << endl;
+        EV << " Percentage of useful transmitted data = " << efficieny*100 << "%" << endl;
     }
     else
     {
@@ -453,11 +482,11 @@ void Hub::printStats(bool collective)
             // get efficiency (useful data / all data)
             float efficieny = useful_data/all_data;
             // print separate node logs
-            EV << "####################### Node [" << i << "] Statistics #######################" << endl;
-            EV << "Total number of generated frames = " << total_generated << endl;
-            EV << "Total number of dropped frames = " << total_dropped << endl;
-            EV << "Total number of retransmitted frames = " << total_retransmitted << endl;
-            EV << "Percentage of useful transmitted data = " << efficieny*100 << "%" << endl;
+            EV << " ####################### Node [" << i << "] Statistics #######################" << endl;
+            EV << " Total number of generated frames = " << total_generated << endl;
+            EV << " Total number of dropped frames = " << total_dropped << endl;
+            EV << " Total number of retransmitted frames = " << total_retransmitted << endl;
+            EV << " Percentage of useful transmitted data = " << efficieny*100 << "%" << endl;
         }
     }
 }
