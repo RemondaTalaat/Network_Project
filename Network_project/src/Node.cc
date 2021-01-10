@@ -151,11 +151,10 @@ void Node::sendMsg()
         // first add char count framing to the message payload
         std::string framed_msg = this->addCharCount(this->msgs[this->S]);
         EV << endl << " message payload after framing with character count " << framed_msg << endl;
-        const char* msg_payload = framed_msg.c_str();
         int padding = 0;
         // apply hamming technique to the message payload for error detection and correction
         EV << endl << " message payload after hamming encode " << this->computeHamming(framed_msg, padding) << endl;
-        msg_payload = this->computeHamming(framed_msg, padding).c_str();
+        const char* msg_payload = this->computeHamming(framed_msg, padding).c_str();
         // create the message to be sent
         Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
         // set the message parameters
