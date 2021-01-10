@@ -257,12 +257,12 @@ void Imessage_Base::setAcknowledge(int acknowledge)
     this->acknowledge = acknowledge;
 }
 
-const char * Imessage_Base::getMessage_payload() const
+std::string Imessage_Base::getMessage_payload() const
 {
-    return this->message_payload.c_str();
+    return this->message_payload;
 }
 
-void Imessage_Base::setMessage_payload(const char * message_payload)
+void Imessage_Base::setMessage_payload(std::string message_payload)
 {
     this->message_payload = message_payload;
 }
