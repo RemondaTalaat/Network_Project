@@ -53,7 +53,7 @@ void Node::initialize()
 void Node::handleMessage(cMessage *msg)
 {
     // check whether node is alive
-    if (!this->is_dead)
+    if (!this->is_dead || msg->getKind() == 5)
     {
         //in case of self-message
         if (msg->isSelfMessage() && !this->is_inactive)
@@ -105,12 +105,18 @@ void Node::handleMessage(cMessage *msg)
             else if (msg->getKind() == 5 && !this->is_inactive)
             {
                 EV << endl << " exiting current session" << endl;
-                this->is_inactive = true;
+                if (!this->is_dead)
+                {
+                    this->is_inactive = true;
+                }
                 this->S = this->Sf;
                 cMessage* msg = new cMessage(std::to_string(this->Sf).c_str());
                 msg ->setKind(4);
                 send(msg, "out");
-                cancelAndDelete(this->send_next_self_msg);
+                if (!this->is_dead)
+                {
+                    cancelAndDelete(this->send_next_self_msg);
+                }
             }
         }
     }

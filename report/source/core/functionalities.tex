@@ -97,7 +97,7 @@ The implementation of the \emph{Go Back N} protocol can be found in \texttt{src/
     \begin{minted}{c}
 void Node::handleMessage(cMessage *msg)
 {
-if (!this->is_dead)
+if (!this->is_dead || msg->getKind() == 5)
 {
 if (msg->isSelfMessage() && !this->is_inactive)
 {
