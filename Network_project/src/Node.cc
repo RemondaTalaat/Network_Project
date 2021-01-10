@@ -153,7 +153,7 @@ void Node::sendMsg()
         EV << endl << " message payload after framing with character count " << framed_msg << endl;
         int padding = 0;
         // apply hamming technique to the message payload for error detection and correction
-        const char* msg_payload = this->computeHamming(framed_msg, padding).c_str();
+        std::string  msg_payload = this->computeHamming(framed_msg, padding);
         EV << endl << " message payload after hamming encode " << msg_payload << endl;
         // create the message to be sent
         Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
@@ -243,7 +243,7 @@ void Node::post_receive_frame(cMessage *msg)
         }
         EV << " at node " << (getIndex()+1) << "." << endl;
         // apply hamming decode to get the exact message ( remove parity bits and correct any detected errors)
-        std::string payload = this->decodeHamming(msg_payload, ((Imessage_Base *)msg)->getPad_length()).c_str();
+        std::string payload = this->decodeHamming(msg_payload, ((Imessage_Base *)msg)->getPad_length());
         // print the real message framed by framing count
         EV << endl << " message payload after decode hamming " << payload << endl;
         // check if error occured to the message count
