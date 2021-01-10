@@ -18,14 +18,33 @@ messages_corpus = [
     "fine!",
     "Hello friend",
     "thanks a lot for your help",
-    "thanks in advance!"
+    "thanks in advance!",
+    "this is a new year",
+    "let's do something new",
+    "let us try that",
+    "good dog",
+    "good boy you are",
+    "random message generation",
+    "collapse!!!",
+    "good year",
+    "awesome experience",
+    "new message",
+    "good old days",
+    "everyone must face the consequences of their own deeds",
+    "maximum speed violation",
+    "european people are restrictive",
+    "what about the new day",
+    "finished my work early"
 ]
 
 for idx in range(int(node_count)):
+    messages_copy = list(messages_corpus)
     with open(os.path.join(root_dir, f"{idx}.txt"), "w+") as f:
-        message_count = random.randint(20, 50)
+        message_count = random.randint(15, 30)
         for message in range(message_count):
+            message_txt = random.choice(messages_copy)
+            messages_copy.remove(message_txt)
             if message != message_count - 1:
-                f.write(random.choice(messages_corpus)+"\n")
+                f.write(message_txt+"\n")
             else:
-                f.write(random.choice(messages_corpus))
+                f.write(message_txt)
