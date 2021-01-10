@@ -211,7 +211,6 @@ void Hub::handleMessage(cMessage *msg)
             cMessage* msg2 = new cMessage("end session");
             msg2->setKind(5);
             send(msg2, "outs", this->receiver);
-        
         }
         // in case of printing system statistics
         else if (msg->getKind() == 2)

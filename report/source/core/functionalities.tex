@@ -4,7 +4,37 @@
 The implementation of the \emph{hamming code} algorithm can be found in \texttt{src/Node.cc} under two functions :
 \begin{itemize}
     \item \texttt{string Node::computeHamming(string s, int \&to\_pad);}
+    \begin{minted}{c} 
+std::string Node::computeHamming(std::string s, int &to_pad)
+{
+int str_length = s.length();
+int m = 8 * str_length;
+int r = 1;
+while(m + r + 1 > pow(2 , r))
+{
+r++;
+}
+...
+}
+    \end{minted} 
     \item \texttt{string Node::decodeHamming(string s, int padding);}
+    \begin{minted}{c}
+std::string Node::decodeHamming(std::string s, int padding)
+{
+if (!s.size())
+{
+return "";
+}
+int str_length = s.length();
+int mr = 8 * str_length - padding;
+int r = 1;
+while(mr + 1 > (pow(2,r)))
+{
+r++;
+}
+...
+}
+    \end{minted}
 \end{itemize}
 
 \subsection{Character Count (Framing)}
@@ -13,26 +43,147 @@ The implementation of the \emph{hamming code} algorithm can be found in \texttt{
 The implementation of the \emph{character count} algorithm can be found in \texttt{src/Node.cc} under two functions :
 \begin{itemize}
     \item \texttt{string Node::addCharCount(string msg);}
+    \begin{minted}{c}
+std::string Node::addCharCount(std::string msg)
+{
+uint8_t msg_size = (uint8_t) msg.size() + 1;
+std::string framed_msg = "";
+framed_msg += msg_size;
+framed_msg += msg;
+return framed_msg;
+}
+    \end{minted}
     \item \texttt{bool Node::checkCharCount(string \&msg);}
+    \begin{minted}{c}
+bool Node::checkCharCount(std::string &msg)
+{
+if (!msg.size())
+{
+return false;
+}
+int msg_size = (int)msg[0] - 1;
+msg.erase(msg.begin());
+if (msg_size == msg.size())
+{
+return true;
+}
+return false;
+}
+    \end{minted}
 \end{itemize}
 
 \subsection{Go Back N (Sliding Window Protocol)}
-The used \textbf{data link protocol} is \emph{Go Back N}, where the sender re-transmits the whole current window upon \textbf{acknowledge timeout}. The node can receive a message \emph{(of kind 4)} from the hub, so that it can start talking to another node. It can, also, send and receive messages \emph{(of kind 3)} to and from the other node, which contains both data and acknowledges \emph{(piggybacked)}. Finally, the node has two kinds of self-messages. \emph{One} is used for marking \textbf{acknowledge timeout}, so that the \textbf{window pointer} is reset. \emph{Two} is used for sending \textbf{piggybacked messages} at certain intervals. So, we can summarize our \emph{Go Back N} implementation as follows :
+The used \textbf{data link protocol} is \emph{Go Back N}, where the sender re-transmits the whole current window upon \textbf{acknowledge timeout}. The node can receive a message \emph{(of kind 4)} from the hub, so that it can start talking to another node. Also, the node receives a message \emph{(of kind 5)} to mark the end of the session and it responds with a message \emph{(of kind 4)} to indicate its last acknowledged frame. It can, also, send and receive messages \emph{(of kind 3)} to and from the other node, which contains both data and acknowledges \emph{(piggybacked)}. Finally, the node has two kinds of self-messages. \emph{One} is used for marking \textbf{acknowledge timeout}, so that the \textbf{window pointer} is reset. \emph{Two} is used for sending \textbf{piggybacked messages} at certain intervals. Moreover, the node can have $3$ states :
+\begin{enumerate}
+    \item \textbf{Active state :} where the node is currently participating in a session.
+    \item \textbf{Inactive state :} where the node is not in a session.
+    \item \textbf{Dead state :} where the node has no more messages to send.
+\end{enumerate}
+
+So, we can summarize our \emph{Go Back N} implementation as follows :
 \begin{itemize}
     \item The node receives a message \emph{(of kind 4)} from the hub, so that it can start transmission.
     \item The node sends its first \textbf{piggybacked message} with acknowledge of $-1$ and sends a self-message \emph{(of kind 2)} to schedule \textbf{next message} to be sent and a self-message \emph{(of kind 1)} to set \textbf{acknowledge timeout}.
     \item When the node receives a message from the other node \emph{(of kind 3)}, it decodes the \textbf{incoming frame} to advance its \textbf{excepted frame count}. Also, it decodes the \textbf{incoming acknowledge} to advance \textbf{its window}.
     \item When the node receives self-message \emph{(of kind 1)}, it checks whether the window is advanced. Accordingly, it can reset \textbf{window pointer}.
     \item When the node receives self-message \emph{(of kind 2)}, it sends the next message to the hub.
-    \item When the node finishes its \textbf{message buffer}, it sends an \textit{"end session"} node to the hub.
+    \item When the session times out, the node receives an \textit{"end session"} message \emph{(of kind 5)} from the hub. The node turns into \textbf{inactive state} and sends its last acknowledged frame to the hub.
+    \item If the last message of the node is acknowledged, the node turns into \textbf{dead state}.
 \end{itemize}
 
 The implementation of the \emph{Go Back N} protocol can be found in \texttt{src/Node.cc} under functions :
 \begin{itemize}
     \item \texttt{void Node::handleMessage(cMessage *msg);}
+    \begin{minted}{c}
+void Node::handleMessage(cMessage *msg)
+{
+if (!this->is_dead)
+{
+if (msg->isSelfMessage() && !this->is_inactive)
+{
+switch(msg->getKind()) 
+{
+case 1:
+{
+...
+}
+case 2:
+{
+...
+}
+}
+}
+else
+{
+if (msg->getKind() == 3 && !this->is_inactive)
+{
+...
+}
+else if (msg->getKind() == 4)
+{
+...
+}
+else if (msg->getKind() == 5 && !this->is_inactive)
+{
+...
+}
+}
+}
+}
+    \end{minted}
     \item \texttt{void Node::sendMsg();}
+    \begin{minted}{c}
+void Node::sendMsg()
+{
+if (this->S <= this->Sl)
+{
+std::string framed_msg = this->addCharCount(this->msgs[this->S]);
+const char* msg_payload = framed_msg.c_str();
+int padding = 0;
+...
+}
+cMessage * send_next_self_msg = new cMessage("");
+send_next_self_msg->setKind(2);
+scheduleAt(simTime() + 1 , send_next_self_msg);
+}
+    \end{minted}
     \item \texttt{void Node::post\_receive\_ack(cMessage *msg);}
+    \begin{minted}{c}
+void Node::post_receive_ack(cMessage *msg)
+{
+if (((Imessage_Base *)msg)->getAcknowledge() == -1)
+{
+return;
+}
+while(this->Sf <= (((Imessage_Base *)msg)->getAcknowledge()))
+{
+this->Sf ++;
+}
+...
+}
+    \end{minted}
     \item \texttt{void Node::post\_receive\_frame(cMessage *msg);}
+    \begin{minted}{c}
+void Node::post_receive_frame(cMessage *msg)
+{
+int received_frame_seq_num = 
+((Imessage_Base *)msg)->getSequence_number();
+if (received_frame_seq_num == this->R)
+{
+this->ack = R;
+...
+bool check = this->checkCharCount(payload);
+if (check)
+{
+EV << " message char count right !" <<endl;
+}
+else
+{
+EV << " message char count wrong !" << endl;
+}
+}
+}
+    \end{minted}
 \end{itemize}
 
 \subsection{Transmission Channel Noise Modelling}
@@ -41,24 +192,143 @@ As mentioned, the hub acts as a \textbf{medium controller}, that is why the hub 
 The implementation of the \emph{noise modelling} can be found in \texttt{src/Hub.cc} under function :
 \begin{itemize}
     \item \texttt{int Hub::applyNoise(Imessage\_Base *msg);}
+    \begin{minted}{c}
+int Hub::applyNoise(Imessage_Base * msg)
+{
+// generate random action from inverted actions 
+// ( losing , delaying , none )
+int choice =uniform(0,3);
+if (choice == 0)
+{
+EV << " message lost !" << endl;
+return 0;
+}
+...
+int prob_modify  = uniform(0,1)*10;
+...
+if (choice == 2)
+{
+return 2;
+}
+else
+{
+return 3;
+}
+}
+if (choice == 2)
+{
+return 1;
+}
+// if none return 4
+return 4;
+}
+    \end{minted}
 \end{itemize}
 
 \subsection{Centralized Network Architecture}
 Since we are implementing a \textbf{centralized network}, we use a \textbf{hub} to communicate between nodes. The hub is, mainly, responsible for allocating \textbf{sessions} in the following way :
 \begin{itemize}
     \item Generate a \textbf{table of pairs} at the beginning of the simulation that includes all the node pairs to communicate.
-    \item At \emph{each session time}, the hub starts a new session through sending the two nodes a message \emph{(of kind 4)} to start transmission.
+    \item At \emph{each session time}, the hub starts a new session through sending the two nodes a message \emph{(of kind 4)} to start transmission. The message contains the expected frame to be sent for the opposite nodes.
     \item The hub schedules a self-message \emph{(of kind 1)}, as well, in order to mark the \textbf{beginning} of a new session.
-    \item The hub continues to \emph{re-direct} the messages, until one node sends an \textit{"end session"} message or the session \emph{times out}.
+    \item The hub continues to \emph{re-direct} the messages, until the session \emph{times out}.
+    \item Once the session times out, the hub sends to the two active nodes an \textit{"end session"} message and receives the last acknowledged frame from each of them.
     \item The hub starts a \emph{new session} between two new nodes and \textbf{ignores} any other messages.
 \end{itemize}
 
 The implementation of the \emph{centralized network} can be found in \texttt{src/Hub.cc} under function :
 \begin{itemize}
     \item \texttt{void handleMessage(cMessage *msg);}
+    \begin{minted}{c}
+void Hub::handleMessage(cMessage *msg)
+{
+if (msg->isSelfMessage())
+{
+if (msg->getKind() == 1)
+{
+...
+}
+else if (msg->getKind() == 2)
+{
+...
+}
+else if (msg->getKind() == 6)
+{
+...
+}
+}
+else
+{
+if (msg->getKind() == 3)
+{
+...
+}
+else if (msg->getKind() == 4)
+{
+...
+}
+}
+}
+    \end{minted}
     \item \texttt{void generatePairs();}
+    \begin{minted}{c}
+void Hub::generatePairs()
+{
+int node1, node2;
+for(int i =0; i < this->n*this->n; ++i)
+{
+...
+}
+}
+    \end{minted}
     \item \texttt{void startSession();}
+    \begin{minted}{c}
+void Hub::startSession()
+{
+this->indexer ++;
+if(this->indexer == this->senders.size())
+{
+this->indexer = 0;
+}
+this->sender = this->senders[this->indexer];
+this->receiver = this->receivers[this->indexer];
+...
+}
+    \end{minted}
     \item \texttt{void parseMessage(Imessage\_Base *msg);}
+    \begin{minted}{c}
+void Hub::parseMessage(Imessage_Base * msg)
+{
+int msg_sender = msg->getSenderModule()->getIndex();
+EV << " message sender id = "<< msg_sender << endl;
+EV << " hub sender id = " << sender << endl;
+EV << " hub receiver id = " << receiver << endl;
+if (msg_sender != this->sender && msg_sender != this->receiver)
+{
+cancelAndDelete(msg);
+return;
+}
+int msg_receiver;
+if (msg_sender == this->sender)
+{
+msg_receiver = this->receiver;
+}
+else
+{
+msg_receiver = this->sender;
+}
+int noise = applyNoise(msg);
+int delay = exponential( par("mean_delay").doubleValue());
+EV << " delay time = " << delay <<endl;
+std::string msg_payload = msg->getMessage_payload();
+switch(noise)
+{
+...
+}
+this->last_sent_frames[msg_sender] = 
+msg->getSequence_number();
+}
+    \end{minted}
 \end{itemize}
 
 \subsection{Statistics Gathering}
@@ -74,5 +344,76 @@ The implementation of the \emph{statistics gathering} can be found in \texttt{sr
 \begin{itemize}
     \item \texttt{void Hub::initializeStats();}
     \item \texttt{void Hub::updateStats(int node\_idx, int seq\_num, int frame\_size, bool is\_dropped, bool is\_duplicated);}
+    \begin{minted}{c}
+void Hub::updateStats(int node_idx, int seq_num, int frame_size, 
+bool is_dropped, bool is_duplicated)
+{
+...
+if(it != this->generated_frames[node_idx].end())
+{
+int index = it - this->generated_frames[node_idx].begin();
+// increase retransmission times
+this->retransmitted_frames[node_idx][index] ++;
+// increase drop times (if dropped)
+if (is_dropped)
+{
+this->is_dropped[node_idx][index] ++;
+}
+// increase duplication times (if duplicated)
+if (is_duplicated)
+{
+this->is_duplicated[node_idx][index] ++;
+}
+}
+else
+{
+...
+}
+}
+    \end{minted}
     \item \texttt{void Hub::printStats(bool collective);}
+    \begin{minted}{c}
+void Hub::printStats(bool collective)
+{
+if (collective)
+{
+// count all generated frames
+int total_generated = 0;
+for (int i = 0; i < this->n; i++)
+{
+total_generated += this->generated_frames[i].size();
+}
+// count all dropped frames
+int total_dropped = 0;
+...
+// count all retransmitted frames
+int total_retransmitted = 0;
+for (int i = 0; i < this->n; i++)
+{
+total_retransmitted += std::accumulate(this->
+retransmitted_frames[i].begin(), 
+this->retransmitted_frames[i].end(), 0);
+}
+float useful_data = 0;
+float all_data = 0;
+for (int i = 0; i < this->n; i++)
+{
+for (int j = 0; j < this->generated_frames[i].size(); j++)
+{
+useful_data += this->frame_sizes[i][j];
+all_data += (this->retransmitted_frames[i][j] + 
+this->is_duplicated[i][j] + 1) * 
+(4*3 + this->frame_sizes[i][j]);
+}
+}
+float efficieny = useful_data/all_data;.
+...
+}
+else
+{
+...
+}
+}
+}
+    \end{minted}
 \end{itemize}
