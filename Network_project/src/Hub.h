@@ -34,6 +34,8 @@ class Hub : public cSimpleModule
     int receiver;                                      // hold the second node in a session
     double n;                                          // total number of nodes connected to the hub
 
+    std::vector<int> last_sent_frames {};              // hold the last sent frame sequence number for all nodes
+    
     // session pairs table data members
     std::vector<int> senders {};
     std:: vector<int> receivers {};

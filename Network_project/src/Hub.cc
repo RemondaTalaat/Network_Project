@@ -66,12 +66,18 @@ void Hub::initialize()
     this->sender = this->senders[0];
     this->receiver = this->receivers[0];
 
+    // initialize the last sent frames with 0, as no frames sent yet
+    for(int i=0; i < this->n; i++)
+    {
+        this->last_sent_frames.push_back(0);
+    }
+
     // send a start session message to start a new session
     this->start_session = new cMessage("");
     this->start_session->setKind(1);
     scheduleAt(simTime() + par("session_time"), this->start_session); // session time
 
-    // send a statistical message to print statistics of the system every 3 minutes
+    // send a statistical message to print statistics of the system
     this->print_stats = new cMessage("");
     this->print_stats->setKind(2);
     scheduleAt(simTime() + par("stats_time"), this->print_stats); // stats print time
@@ -92,10 +98,10 @@ void Hub::startSession()
     this->sender = this->senders[this->indexer];
     this->receiver = this->receivers[this->indexer];
     // send messages to notify the nodes the session started
-    cMessage* msg = new cMessage("sender");
+    cMessage* msg = new cMessage(std::to_string(this->last_sent_frames[this->receiver]).c_str());
     msg ->setKind(4);
     send(msg, "outs", sender);
-    cMessage* msg2 = new cMessage("receiver");
+    cMessage* msg2 = new cMessage(std::to_string(this->last_sent_frames[this->sender]).c_str());
     msg2 ->setKind(4);
     send(msg2, "outs", receiver);
     // schedule the next session if none of the nodes finishes during the session time
@@ -299,6 +305,7 @@ void Hub::parseMessage(Imessage_Base * msg)
             send(msg, "outs", msg_receiver );
             break;
     }
+    this->last_sent_frames[msg_sender] = msg->getSequence_number();
 }
 
 // ------------------------------------------- statistics utilities --------------------------------------------

@@ -85,6 +85,10 @@ void Node::handleMessage(cMessage *msg)
         // start session message so start sending the messages
         else if (msg->getKind() == 4)
         {
+            EV <<  "previous R value = " << this->R <<endl;
+            this ->ack = -1;
+            this -> R = std::stoi(msg->getName());
+            EV << "new R value = " << this->R <<endl;
             this->sendMsg();
         }
     }
@@ -132,8 +136,8 @@ void Node::sendMsg()
         // create the message to be sent
         Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
         // set the message parameters
-        msg ->setSequence_number(this->S % (this->max_seq + 1));
-        msg ->setMessage_payload(msg_payload);
+        msg->setSequence_number(this->S);
+        msg->setMessage_payload(msg_payload);
         msg->setAcknowledge(this->ack);
         msg->setKind(3);
         msg->setPad_length(padding);
@@ -190,7 +194,7 @@ void Node::post_receive_frame(cMessage *msg)
         // update the next expected frame
         this->R++;
         // get the message payload to extract the real message from it
-        const char * msg_payload = ((Imessage_Base *)msg)->getMessage_payload();
+        std::string msg_payload = ((Imessage_Base *)msg)->getMessage_payload();
         // apply hamming decode to get the exact message ( remove parity bits and correct any detected errors)
         std::string payload = this->decodeHamming(msg_payload, ((Imessage_Base *)msg)->getPad_length()).c_str();
         // print the real message framed by framing count
