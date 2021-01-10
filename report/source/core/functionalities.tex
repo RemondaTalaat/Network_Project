@@ -1,0 +1,78 @@
+\subsection{Hamming Code (Error Detection/Correction)}
+\emph{Hamming code} is implemented to handle $1-bit$ error detection and correction. Since the message modification can only be of $1$ bit, the usage of hamming code ensures that \textbf{no corrupted frames} are received. The algorithm implementation follows exactly the hamming code algorithm. \emph{Hamming code} is applied on the message payload and the result is padded with zeros to be sent as a \textbf{string of characters}. \\
+
+The implementation of the \emph{hamming code} algorithm can be found in \texttt{src/Node.cc} under two functions :
+\begin{itemize}
+    \item \texttt{string Node::computeHamming(string s, int \&to\_pad);}
+    \item \texttt{string Node::decodeHamming(string s, int padding);}
+\end{itemize}
+
+\subsection{Character Count (Framing)}
+\emph{Character Count} is implemented as a \textbf{framing method} of the transmitted message. It is applied to the \textbf{message payload} to count characters of the string and \textbf{prepend} the count as one byte to the beginning of the \textbf{message payload}. The \emph{decoding} is done in the same manner. \emph{Character count} framing is applied \textbf{before} hamming code. \\
+
+The implementation of the \emph{character count} algorithm can be found in \texttt{src/Node.cc} under two functions :
+\begin{itemize}
+    \item \texttt{string Node::addCharCount(string msg);}
+    \item \texttt{bool Node::checkCharCount(string \&msg);}
+\end{itemize}
+
+\subsection{Go Back N (Sliding Window Protocol)}
+The used \textbf{data link protocol} is \emph{Go Back N}, where the sender re-transmits the whole current window upon \textbf{acknowledge timeout}. The node can receive a message \emph{(of kind 4)} from the hub, so that it can start talking to another node. It can, also, send and receive messages \emph{(of kind 3)} to and from the other node, which contains both data and acknowledges \emph{(piggybacked)}. Finally, the node has two kinds of self-messages. \emph{One} is used for marking \textbf{acknowledge timeout}, so that the \textbf{window pointer} is reset. \emph{Two} is used for sending \textbf{piggybacked messages} at certain intervals. So, we can summarize our \emph{Go Back N} implementation as follows :
+\begin{itemize}
+    \item The node receives a message \emph{(of kind 4)} from the hub, so that it can start transmission.
+    \item The node sends its first \textbf{piggybacked message} with acknowledge of $-1$ and sends a self-message \emph{(of kind 2)} to schedule \textbf{next message} to be sent and a self-message \emph{(of kind 1)} to set \textbf{acknowledge timeout}.
+    \item When the node receives a message from the other node \emph{(of kind 3)}, it decodes the \textbf{incoming frame} to advance its \textbf{excepted frame count}. Also, it decodes the \textbf{incoming acknowledge} to advance \textbf{its window}.
+    \item When the node receives self-message \emph{(of kind 1)}, it checks whether the window is advanced. Accordingly, it can reset \textbf{window pointer}.
+    \item When the node receives self-message \emph{(of kind 2)}, it sends the next message to the hub.
+    \item When the node finishes its \textbf{message buffer}, it sends an \textit{"end session"} node to the hub.
+\end{itemize}
+
+The implementation of the \emph{Go Back N} protocol can be found in \texttt{src/Node.cc} under functions :
+\begin{itemize}
+    \item \texttt{void Node::handleMessage(cMessage *msg);}
+    \item \texttt{void Node::sendMsg();}
+    \item \texttt{void Node::post\_receive\_ack(cMessage *msg);}
+    \item \texttt{void Node::post\_receive\_frame(cMessage *msg);}
+\end{itemize}
+
+\subsection{Transmission Channel Noise Modelling}
+As mentioned, the hub acts as a \textbf{medium controller}, that is why the hub is responsible for adding \textbf{noise} and \textbf{delay} to the transmitted messages. The implemented noise types are \emph{1-bit} \textbf{modification} \emph{(on message payload)}, \textbf{delay}, \textbf{drop} and \textbf{duplication}. The noise is added with \textbf{random probability} and \textbf{multiple types} might be applied on a single message at once. \\
+
+The implementation of the \emph{noise modelling} can be found in \texttt{src/Hub.cc} under function :
+\begin{itemize}
+    \item \texttt{int Hub::applyNoise(Imessage\_Base *msg);}
+\end{itemize}
+
+\subsection{Centralized Network Architecture}
+Since we are implementing a \textbf{centralized network}, we use a \textbf{hub} to communicate between nodes. The hub is, mainly, responsible for allocating \textbf{sessions} in the following way :
+\begin{itemize}
+    \item Generate a \textbf{table of pairs} at the beginning of the simulation that includes all the node pairs to communicate.
+    \item At \emph{each session time}, the hub starts a new session through sending the two nodes a message \emph{(of kind 4)} to start transmission.
+    \item The hub schedules a self-message \emph{(of kind 1)}, as well, in order to mark the \textbf{beginning} of a new session.
+    \item The hub continues to \emph{re-direct} the messages, until one node sends an \textit{"end session"} message or the session \emph{times out}.
+    \item The hub starts a \emph{new session} between two new nodes and \textbf{ignores} any other messages.
+\end{itemize}
+
+The implementation of the \emph{centralized network} can be found in \texttt{src/Hub.cc} under function :
+\begin{itemize}
+    \item \texttt{void handleMessage(cMessage *msg);}
+    \item \texttt{void generatePairs();}
+    \item \texttt{void startSession();}
+    \item \texttt{void parseMessage(Imessage\_Base *msg);}
+\end{itemize}
+
+\subsection{Statistics Gathering}
+The \textbf{statistics gathering} function is implemented inside the hub, since the hub is the one controlling the \textbf{whole transmission process}. Also, the \textbf{transmission noise} is created in the hub. So, the hub keeps track of the \textbf{generated}, \textbf{lost}, \textbf{re-transmitted} and \textbf{duplicated} message for every node. It sets up a self-message \emph{(of kind 2)} to schedule the \textbf{statistics print}. \textbf{Statistics} can be printed for each node \emph{separately} or \emph{collective} for all nodes. So, the following statistics are printed :
+\begin{enumerate}
+    \item The total number of \textbf{generated} frames.
+    \item The total number of \textbf{dropped} frames.
+    \item The total number of \textbf{re-transmitted} frames.
+    \item The \textbf{percentage} of useful transmitted data \emph{(Efficiency of the system)}.
+\end{enumerate}
+
+The implementation of the \emph{statistics gathering} can be found in \texttt{src/Hub.cc} under function :
+\begin{itemize}
+    \item \texttt{void Hub::initializeStats();}
+    \item \texttt{void Hub::updateStats(int node\_idx, int seq\_num, int frame\_size, bool is\_dropped, bool is\_duplicated);}
+    \item \texttt{void Hub::printStats(bool collective);}
+\end{itemize}

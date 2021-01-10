@@ -1,0 +1,94 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{color}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\link}[1]{{\color{blue}\href{#1}{#1}}}
+
+\begin{document}
+\begin{titlepage}
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+\setlength{\topmargin}{0in}
+\center % Center everything on the page
+ 
+ \begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\hspace*{-0.5cm}
+\includegraphics[scale=4]{images/uni_logo.png}\\
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.5\textwidth}
+\begin{flushright} \large
+\hspace*{2cm}
+\includegraphics[scale=0.6]{images/fac_logo.png}\\
+\end{flushright}
+\end{minipage}\\[1cm]
+
+\textsc{\Large Cairo University - Faculty of Engineering}\\[0.5cm] % Major
+\textsc{Computer Engineering Department} \\[0.5cm] 
+\textsc{Computer Networks Project} \\[0.5cm] 
+% Name of your heading such as course name
+\textsc{\large }\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Team One}\\[0.4cm] % Title of your document
+\HRule \\[1cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+\begin{minipage}{0.8\textwidth}
+\begin{flushleft} 
+\textbf{Mohamed Shawky Zaky} \\
+\texttt{SEC:2, BN:15} \\[0.5cm]
+
+\textbf{Remonda Talaat Eskarous} \\
+\texttt{SEC:1, BN:19} \\[0.5cm]
+
+\textbf{Mohamed Ahmed Mohamed Ahmed} \\
+\texttt{SEC:2, BN:10} \\[0.5cm]
+
+\textbf{Mohamed Ramzy Helmy} \\
+\texttt{SEC:2, BN:13}
+
+\end{flushleft}
+\end{minipage}\\[6cm]
+
+\end{titlepage}
+
+\thispagestyle{empty}
+
+\tableofcontents
+\listoffigures
+\clearpage
+
+\pagenumbering{arabic}
+
+%----------------------------------------------------------------------------------------
+%	REPORT SECTIONS
+%----------------------------------------------------------------------------------------
+\section{Overall System}
+\input{core/system}
+
+\section{Implemented Functionalities}
+\input{core/functionalities}
+
+\section{Workload Division}
+\input{core/workload}
+
+\end{document}
