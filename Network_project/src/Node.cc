@@ -227,7 +227,7 @@ std::string Node::addCharCount(std::string msg)
     std::string framed_msg = "";
     framed_msg += msg_size;
     framed_msg += msg;
-    return (framed_msg);
+    return framed_msg;
 }
 /**
  * check whether character count is correct
@@ -236,6 +236,10 @@ std::string Node::addCharCount(std::string msg)
 bool Node::checkCharCount(std::string &msg)
 {
     // check whether character count is correct
+    if (!msg.size())
+    {
+        return false;
+    }
     int msg_size = (int)msg[0] - 1;
     msg.erase(msg.begin());
     if (msg_size == msg.size())
@@ -332,6 +336,10 @@ std::string Node::computeHamming(std::string s, int &to_pad)
  */
 std::string Node::decodeHamming(std::string s, int padding)
 {
+    if (!s.size())
+    {
+        return "";
+    }
     int str_length = s.length();
     int mr = 8 * str_length - padding;
     int r = 1;
