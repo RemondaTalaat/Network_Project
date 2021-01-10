@@ -24,15 +24,12 @@
 #include <string>
 #include <cstdlib>
 #include "Imessage_m.h"
+
 using namespace omnetpp;
 
-/**
- * TODO - Generated class
- */
 class Hub : public cSimpleModule
 {
   private:
-
     int sender;                                        // hold the first node in a session
     int receiver;                                      // hold the second node in a session
     double n;                                          // total number of nodes connected to the hub
@@ -45,18 +42,17 @@ class Hub : public cSimpleModule
     cMessage * start_session;                          // the self-message used to start a session
 
     // statistics gathering
-    std::vector<std::vector<int>> generated_frames;
-    std::vector<std::vector<int>> frame_sizes;
-    std::vector<std::vector<int>> is_dropped;
-    std::vector<std::vector<int>> is_duplicated;
-    std::vector<std::vector<int>> retransmitted_frames;
+    std::vector<std::vector<int>> generated_frames;    // sequence numbers of generated frames for all nodes
+    std::vector<std::vector<int>> frame_sizes;         // frame sizes of all generated frames for all nodes
+    std::vector<std::vector<int>> is_dropped;          // number of drop times of all generated frames for all nodes
+    std::vector<std::vector<int>> is_duplicated;       // number of duplication times of all generated frames for all nodes
+    std::vector<std::vector<int>> retransmitted_frames;// number of retransmission times of all generated frames for all nodes
 
-    cMessage * print_stats;
+    cMessage * print_stats;                            // the self-message used to print statistics
 
   protected:
     virtual void initialize();                         // initialize the hub data members and generate pairs table
     virtual void handleMessage(cMessage *msg);         // handle any received message
-
 
     void generatePairs();                              // generate the pairs of nodes table
     void startSession();                               // start a new session to navigate their messages
@@ -64,9 +60,9 @@ class Hub : public cSimpleModule
     int applyNoise(Imessage_Base * msg);               // mimic the channel noise effect on the message
 
     // statistics functions
-    void initializeStats();
-    void updateStats(int node_idx, int seq_num, int frame_size, bool is_dropped, bool is_duplicated);
-    void printStats(bool collective);
+    void initializeStats();                            // initialize statistics variables
+    void updateStats(int node_idx, int seq_num, int frame_size, bool is_dropped, bool is_duplicated); // update node statistics
+    void printStats(bool collective);                  // print statistics (separate or collective)
 };
 
 #endif

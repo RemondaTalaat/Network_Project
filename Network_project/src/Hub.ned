@@ -15,9 +15,6 @@
 
 package network_project;
 
-//
-// TODO auto-generated module
-//
 simple Hub
 {
     parameters:

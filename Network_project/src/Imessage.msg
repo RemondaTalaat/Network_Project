@@ -13,11 +13,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-//
-// TODO generated message class
-//
-
-packet Imessage {
+packet Imessage
+{
     @customize(true);                   // see the generated C++ header for more info
     int sequence_number;                // message sequence number
     int pad_length;                     // the padding length ( used in hamming )

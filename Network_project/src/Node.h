@@ -22,17 +22,10 @@
 #include <string>
 #include <cstdlib>
 #include <fstream>
-
 #include <unordered_map>
-
-
-//#include <algorithm>
 
 using namespace omnetpp;
 
-/**
- * TODO - Generated class
- */
 class Node : public cSimpleModule
 {
   private:
@@ -46,8 +39,6 @@ class Node : public cSimpleModule
     int R;                               // sequence number of the frame expected to be received
     int ack;                             // acknowledge of the last received frame
 
-
-
   protected:
     virtual void initialize();                                 // initialize the node data members and read its messages
     virtual void handleMessage(cMessage *msg);                 // handle any received message
@@ -57,10 +48,8 @@ class Node : public cSimpleModule
     void post_receive_frame(cMessage *msg);                    // schedule ack
     std::string addCharCount(std::string msg);                 // add character count to message payload
     bool checkCharCount(std::string &msg);                     // check whether character count is correct
-    std::string computeHamming(std::string s, int &to_pad);
-    std::string decodeHamming(std::string s, int padding);
-
-
+    std::string computeHamming(std::string s, int &to_pad);    // compute hamming code for message payload
+    std::string decodeHamming(std::string s, int padding);     // decode hamming code and correct 1-bit error
 };
 
 #endif
