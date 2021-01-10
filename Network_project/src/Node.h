@@ -42,6 +42,8 @@ class Node : public cSimpleModule
     bool is_inactive;                    // define whether the node is inactive
     bool is_dead;                        // define whether the node is dead
 
+    int max_S;                           // keep track of the last transmitted message
+
     cMessage * send_next_self_msg;       // the send next frame message
 
   protected:

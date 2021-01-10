@@ -33,11 +33,13 @@ void Node::initialize()
     this->S  = 0;
     this->Sf = 0;
     this->Sl = std::min(this->Sf + max_seq - 1, int(this->msgs.size())-1);
+    // initialize the maximum sent frame with 0
+    this->max_S = 0;
     // initialize the waited frame to 0
     this->R  = 0;
     // initialized the received acknowledge to -1 ( no thing received yet)
     this->ack = -1;
-    EV << " node constructed !"<<endl;
+    EV << endl << " node constructed !" << endl;
 }
 /**
  * function is responsible for handling different types of received msgs
@@ -65,7 +67,7 @@ void Node::handleMessage(cMessage *msg)
                     bool compare = strcmp(msg->getName(), std::to_string(this->Sf).c_str());
                     if(compare == 0)
                     {
-                        EV << endl << " not receiving acknowledge -> go back from the beginning of the window !" <<endl;
+                        EV << endl << " timeout for frame number " << msg->getName() << " at node " << (getIndex() + 1) << endl;
                         // timeout: no acknowledge came -> re-send
                         this->S = this->Sf;
                     }
@@ -91,18 +93,18 @@ void Node::handleMessage(cMessage *msg)
             // start session message so start sending the messages
             else if (msg->getKind() == 4)
             {
-                EV << " entering a new session" << endl;
+                EV << endl << " entering a new session" << endl;
                 this->is_inactive = false;
-                EV <<  " previous R value = " << this->R <<endl;
+                // EV << endl <<  " previous R value = " << this->R <<endl;
                 this ->ack = -1;
                 this -> R = std::stoi(msg->getName());
-                EV << " new R value = " << this->R <<endl;
+                // EV << endl << " new R value = " << this->R <<endl;
                 this->sendMsg();
             }
             // end session message to change to inactive state
             else if (msg->getKind() == 5 && !this->is_inactive)
             {
-                EV << " exiting current session" << endl;
+                EV << endl << " exiting current session" << endl;
                 this->is_inactive = true;
                 this->S = this->Sf;
                 cMessage* msg = new cMessage(std::to_string(this->Sf).c_str());
@@ -139,11 +141,14 @@ void Node::sendMsg()
     // send message referred by S if S stills in the window
     if (this->S <= this->Sl)
     {
+        EV << endl << " message payload before framing with character count " << this->msgs[this->S] << endl;
         // first add char count framing to the message payload
         std::string framed_msg = this->addCharCount(this->msgs[this->S]);
+        EV << endl << " message payload after framing with character count " << framed_msg << endl;
         const char* msg_payload = framed_msg.c_str();
         int padding = 0;
         // apply hamming technique to the message payload for error detection and correction
+        EV << endl << " message payload after hamming encode " << this->computeHamming(framed_msg, padding) << endl;
         msg_payload = this->computeHamming(framed_msg, padding).c_str();
         // create the message to be sent
         Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
@@ -159,9 +164,17 @@ void Node::sendMsg()
         cMessage * time_out_self_msg = new cMessage(std::to_string(this->S).c_str());
         time_out_self_msg->setKind(1);
         scheduleAt(simTime() + par("window_resend_timeout") , time_out_self_msg);
-        EV << endl << " message sent successfully !" <<endl;
+        if (this->max_S > this->S)
+        {
+            EV << endl << "retransmiting message with payload : " << this->msgs[this->S] << endl;
+        }
+        else
+        {
+            EV << endl << " message sent successfully !" <<endl;
+            this->max_S ++;
+        }
         // print the window pointers status after sending the message
-        EV << " S_f = "<<this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
+        // EV << endl << " S_f = "<<this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
         this->S++;
     }
     // send self-message to send the next frame after 1 second
@@ -189,11 +202,11 @@ void Node::post_receive_ack(cMessage *msg)
     // if acknowledge is the last sequence number then the node is dead
     if (((Imessage_Base *)msg)->getAcknowledge() == int(this->msgs.size())-1)
     {
-        EV << " node " << getIndex() << " is dead!" << endl;
+        EV << endl << " node " << getIndex() << " is dead!" << endl;
         this->is_dead = true;
     }
     // print the new window pointers status( for debugging )
-    EV << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << endl;
+    // EV << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << endl;
 }
 /**
  * receive a frame if it was expected, update the acknowledge to be sent and the next expected frame to come.
@@ -213,22 +226,33 @@ void Node::post_receive_frame(cMessage *msg)
         this->R++;
         // get the message payload to extract the real message from it
         std::string msg_payload = ((Imessage_Base *)msg)->getMessage_payload();
+        EV << endl << " recieved message with payload " << ((Imessage_Base *)msg)->getMessage_payload();
+        EV << ", sequence number " << received_frame_seq_num;
+        if (((Imessage_Base *)msg)->getAcknowledge() == -1)
+        {
+            EV << ", message type first frame";
+        }
+        else
+        {
+            EV << ", message type piggybacked";
+        }
+        EV << " at node " << (getIndex()+1) << "." << endl;
         // apply hamming decode to get the exact message ( remove parity bits and correct any detected errors)
         std::string payload = this->decodeHamming(msg_payload, ((Imessage_Base *)msg)->getPad_length()).c_str();
         // print the real message framed by framing count
-        EV << " message payload after decode hamming " << payload << endl;
+        EV << endl << " message payload after decode hamming " << payload << endl;
         // check if error occured to the message count
         bool check = this->checkCharCount(payload);
         if (check)
         {
-            EV << " message char count right !" <<endl;
+            EV << endl << " message char count right !" <<endl;
         }
         else
         {
-            EV << " message char count wrong !" << endl;
+            EV << endl << " message char count wrong !" << endl;
         }
         // print the window pointers status after receiving frame ( for debugging )
-        EV << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
+        // EV << endl << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
     }
 }
 

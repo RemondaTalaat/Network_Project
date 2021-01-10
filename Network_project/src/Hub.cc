@@ -38,12 +38,6 @@ void Hub::generatePairs()
         // push it to the receivers vector
         this->receivers.push_back(node2);
     }
-    // Debugging prints
-    /*for(int i = 0; i < this->n*this->n; ++i) 
-    {
-        EV << " senders[" << i << "] = " << this->senders[i] <<endl;
-        EV << " receivers[" << i << "] = " << this->receivers[i] <<endl;
-    }*/
 }
 /**
  * function used to initialize the hub data members.
@@ -88,6 +82,8 @@ void Hub::initialize()
     this->print_stats = new cMessage("");
     this->print_stats->setKind(2);
     scheduleAt(simTime() + par("stats_time"), this->print_stats); // stats print time
+
+    EV << endl << " hub constructed !" << endl;
 }
 /**
  * start new session by selecting the ordered pairs from table and send them messages to start.
@@ -112,8 +108,9 @@ void Hub::startSession()
     msg2 ->setKind(4);
     send(msg2, "outs", receiver);
     // schedule the next session if none of the nodes finishes during the session time
-    EV << " scheduled a new session after " << par("session_time").doubleValue()  << "s" << endl;
+    EV << endl << " scheduled a new session after " << par("session_time").doubleValue()  << "s" << endl;
     scheduleAt(simTime() + par("session_time") , this->start_session);
+    EV << endl << " node " << (this->sender + 1) << " and node " << (this->receiver +1) << " will start working now" << endl;
 }
 /**
  * mimic the channel effect by choosing an action to do with the message, lose it or delay it or neither of them.
@@ -134,7 +131,7 @@ int Hub::applyNoise(Imessage_Base * msg)
     // in case of 0 means lose the message so return 0 so the message deleted
     if (choice == 0)
     {
-        EV << " message lost !" << endl;
+        EV << endl << " message lost !" << endl;
         return 0;
     }
     // calculate the probability to modify a message
@@ -145,14 +142,14 @@ int Hub::applyNoise(Imessage_Base * msg)
         // read the message payload
         std::string s = msg ->getMessage_payload();
         // print payload before modification to assure modification happens
-        EV << " message before modification " << s << endl;
+        EV << endl << " message before modification " << s << endl;
         // pick random char from the message payload to modify it
         int size = s.size();
         int random_var = uniform(0, size);
         // convert that char to its binary representation
         std::bitset<8> bits(s[random_var]);
         // pick random bit in that char to modify
-        EV << bits.to_string() << endl;
+        EV << endl << bits.to_string() << endl;
         int random_bit = uniform(0,8);
         //invert the selected bit
         bits[random_bit] = ! bits[random_bit];
@@ -164,14 +161,14 @@ int Hub::applyNoise(Imessage_Base * msg)
         // update the payload to the modified one
         msg->setMessage_payload(ss.str().c_str());
         // print payload after modification to assure modification happens
-        EV << " message after modification " << s << endl;
+        EV << endl << " message after modification " << s << endl;
     }
     // calculate the probability to duplicate the message
     int prob_duplicate  = uniform(0,1)*10;
     // in case of message duplication
     if (prob_duplicate > par("prob_duplication").doubleValue())
     {
-        EV << " message duplicated !" <<endl;
+        EV << endl << " message duplicated !" <<endl;
         // check if the message also delayed return 2 else return 3
         if (choice == 2)
         {
@@ -203,7 +200,7 @@ void Hub::handleMessage(cMessage *msg)
         if (msg->getKind() == 1)
         {
             // send session timeout to the current two nodes
-            EV << " ending current session !" << endl;
+            EV << endl << " ending current session !" << endl;
             EV << " sending termination to the nodes " << endl;
             cMessage* msg1 = new cMessage("end session");
             msg1->setKind(5);
@@ -241,7 +238,7 @@ void Hub::handleMessage(cMessage *msg)
         {
             // save last acknowledged frame for each node
             int msg_sender = msg->getSenderModule()->getIndex();
-            EV << " node " << msg_sender << " stopped at sequence number = " << msg->getName() << endl;
+            EV << endl << " node " << msg_sender << " stopped at sequence number = " << msg->getName() << endl;
             // set last acknowledged sequence number of the node
             this->last_sent_frames[msg_sender] = std::stoi(msg->getName());
             // check whether to start the session or not
@@ -252,6 +249,7 @@ void Hub::handleMessage(cMessage *msg)
             else
             {
                 this->is_session = true;
+                EV << endl << " node " << (this->sender + 1) << " and node " << (this->receiver +1) << " will stop working now" << endl;
                 startSession();
             }
         }
@@ -266,7 +264,7 @@ void Hub::parseMessage(Imessage_Base * msg)
     // get the message sender
     int msg_sender = msg->getSenderModule()->getIndex();
     // logs for debugging
-    EV << " message sender id = "<< msg_sender << endl;
+    EV << endl << " message sender id = "<< msg_sender << endl;
     EV << " hub sender id = " << sender << endl;
     EV << " hub receiver id = " << receiver << endl;
     // if a message was received from previous session ignore it
@@ -303,8 +301,8 @@ void Hub::parseMessage(Imessage_Base * msg)
         // delayed , delayed and modified
         case 1:
         {
-            EV <<  " message delayed !"  <<endl;
-            EV << " delay time = " << delay <<endl;
+            EV << endl <<  " message delayed !"  <<endl;
+            EV << endl << " delay time = " << delay <<endl;
             this->updateStats(msg_sender, msg->getSequence_number(), msg_payload.size(), false, false);
             sendDelayed(msg, delay, "outs", msg_receiver);
             break;
@@ -312,8 +310,8 @@ void Hub::parseMessage(Imessage_Base * msg)
         // delayed duplicate , delayed duplicate and modified
         case 2:
         {
-            EV << " message delayed !" <<endl;
-            EV << " delay time = " << delay <<endl;
+            EV << endl << " message delayed !" <<endl;
+            EV << endl << " delay time = " << delay <<endl;
             this->updateStats(msg_sender, msg->getSequence_number(), msg_payload.size(), false, true);
             Imessage_Base * msg2 = msg->dup();
             sendDelayed(msg, delay, "outs", msg_receiver);
@@ -453,7 +451,7 @@ void Hub::printStats(bool collective)
         // get efficiency (useful data / all data)
         float efficieny = useful_data/all_data;
         // print collective logs
-        EV << " ####################### Collective Statistics #######################" << endl;
+        EV << endl << " ####################### Collective Statistics #######################" << endl;
         EV << " Total number of generated frames = " << total_generated << endl;
         EV << " Total number of dropped frames = " << total_dropped << endl;
         EV << " Total number of retransmitted frames = " << total_retransmitted << endl;
@@ -482,7 +480,7 @@ void Hub::printStats(bool collective)
             // get efficiency (useful data / all data)
             float efficieny = useful_data/all_data;
             // print separate node logs
-            EV << " ####################### Node [" << i << "] Statistics #######################" << endl;
+            EV << endl << " ####################### Node [" << i << "] Statistics #######################" << endl;
             EV << " Total number of generated frames = " << total_generated << endl;
             EV << " Total number of dropped frames = " << total_dropped << endl;
             EV << " Total number of retransmitted frames = " << total_retransmitted << endl;
