@@ -9,7 +9,7 @@
 #  pragma clang diagnostic ignored "-Wreserved-id-macro"
 #endif
 #include <omnetpp.h>
-
+#include <string>
 // nedtool version check
 #define MSGC_VERSION 0x0506
 #if (MSGC_VERSION!=OMNETPP_VERSION)
@@ -61,7 +61,7 @@ class Imessage_Base : public ::omnetpp::cPacket
     int sequence_number;
     int pad_length;
     int acknowledge;
-    ::omnetpp::opp_string message_payload;
+    std::string message_payload;
 
   private:
     void copy(const Imessage_Base& other);
@@ -89,8 +89,8 @@ class Imessage_Base : public ::omnetpp::cPacket
     virtual void setPad_length(int pad_length);
     virtual int getAcknowledge() const;
     virtual void setAcknowledge(int acknowledge);
-    virtual const char * getMessage_payload() const;
-    virtual void setMessage_payload(const char * message_payload);
+    virtual std::string getMessage_payload() const;
+    virtual void setMessage_payload(std::string message_payload);
 };
 
 
