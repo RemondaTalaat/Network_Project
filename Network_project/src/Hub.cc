@@ -21,7 +21,7 @@ Define_Module(Hub);
  */
 void Hub::generatePairs()
 {
-    int node1,node2;
+    int node1, node2;
     // loop over the nodes square times
     for(int i =0; i < this->n*this->n; ++i)
     {
@@ -264,9 +264,9 @@ void Hub::parseMessage(Imessage_Base * msg)
     // get the message sender
     int msg_sender = msg->getSenderModule()->getIndex();
     // logs for debugging
-    EV << endl << " message sender id = "<< msg_sender << endl;
-    EV << " hub sender id = " << sender << endl;
-    EV << " hub receiver id = " << receiver << endl;
+    // EV << endl << " message sender id = "<< msg_sender << endl;
+    // EV << " hub sender id = " << sender << endl;
+    // EV << " hub receiver id = " << receiver << endl;
     // if a message was received from previous session ignore it
     if (msg_sender != this->sender && msg_sender != this->receiver)
     {

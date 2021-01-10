@@ -166,7 +166,7 @@ void Node::sendMsg()
         scheduleAt(simTime() + par("window_resend_timeout") , time_out_self_msg);
         if (this->max_S > this->S)
         {
-            EV << endl << "retransmiting message with payload : " << this->msgs[this->S] << endl;
+            EV << endl << " retransmiting message with payload : " << this->msgs[this->S] << endl;
         }
         else
         {
