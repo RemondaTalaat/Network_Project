@@ -39,7 +39,7 @@ messages_corpus = [
 
 for idx in range(int(node_count)):
     messages_copy = list(messages_corpus)
-    with open(os.path.join(root_dir, f"{idx}.txt"), "w+") as f:
+    with open(os.path.join(root_dir, f"node{idx+1}.txt"), "w+") as f:
         message_count = random.randint(15, 30)
         for message in range(message_count):
             message_txt = random.choice(messages_copy)

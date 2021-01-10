@@ -120,8 +120,8 @@ void Node::generateMsgs()
 {
     // read the text file specified to node index
     std::stringstream ss;
-    ss << getIndex();
-    std::string file_name = "msg_files/" + ss.str() + ".txt";
+    ss << (getIndex()+1);
+    std::string file_name = "msg_files/node" + ss.str() + ".txt";
     std::string msg;
     // read all lines into messages buffer
     std::ifstream file(file_name);
