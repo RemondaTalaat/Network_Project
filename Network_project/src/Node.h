@@ -42,6 +42,8 @@ class Node : public cSimpleModule
     bool is_inactive;                    // define whether the node is inactive
     bool is_dead;                        // define whether the node is dead
 
+    cMessage * send_next_self_msg;       // the send next frame message
+
   protected:
     virtual void initialize();                                 // initialize the node data members and read its messages
     virtual void handleMessage(cMessage *msg);                 // handle any received message

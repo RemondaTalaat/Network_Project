@@ -289,7 +289,6 @@ void Hub::parseMessage(Imessage_Base * msg)
     int noise = applyNoise(msg);
     // calculate the amount of delay
     int delay = exponential( par("mean_delay").doubleValue());
-    EV << " delay time = " << delay <<endl;
     std::string msg_payload = msg->getMessage_payload();
     //select how to send the message based on the noise effect
     switch(noise)
@@ -305,6 +304,7 @@ void Hub::parseMessage(Imessage_Base * msg)
         case 1:
         {
             EV <<  " message delayed !"  <<endl;
+            EV << " delay time = " << delay <<endl;
             this->updateStats(msg_sender, msg->getSequence_number(), msg_payload.size(), false, false);
             sendDelayed(msg, delay, "outs", msg_receiver);
             break;
@@ -313,6 +313,7 @@ void Hub::parseMessage(Imessage_Base * msg)
         case 2:
         {
             EV << " message delayed !" <<endl;
+            EV << " delay time = " << delay <<endl;
             this->updateStats(msg_sender, msg->getSequence_number(), msg_payload.size(), false, true);
             Imessage_Base * msg2 = msg->dup();
             sendDelayed(msg, delay, "outs", msg_receiver);

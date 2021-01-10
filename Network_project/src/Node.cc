@@ -108,6 +108,7 @@ void Node::handleMessage(cMessage *msg)
                 cMessage* msg = new cMessage(std::to_string(this->Sf).c_str());
                 msg ->setKind(4);
                 send(msg, "out");
+                cancelAndDelete(this->send_next_self_msg);
             }
         }
     }
@@ -164,7 +165,7 @@ void Node::sendMsg()
         this->S++;
     }
     // send self-message to send the next frame after 1 second
-    cMessage * send_next_self_msg = new cMessage("");
+    this->send_next_self_msg = new cMessage("");
     send_next_self_msg->setKind(2);
     scheduleAt(simTime() + 1 , send_next_self_msg);
 }
