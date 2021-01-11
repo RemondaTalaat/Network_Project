@@ -39,7 +39,9 @@ void Node::initialize()
     this->R  = 0;
     // initialized the received acknowledge to -1 ( no thing received yet)
     this->ack = -1;
+    freopen("logs.txt", "a", stdout);
     EV << endl << " node constructed !" << endl;
+    std::cout << endl << "NODE " << getIndex()+1  << " : " << " node constructed !" << endl;
 }
 /**
  * function is responsible for handling different types of received msgs
@@ -68,6 +70,7 @@ void Node::handleMessage(cMessage *msg)
                     if(compare == 0)
                     {
                         EV << endl << " timeout for frame number " << msg->getName() << " at node " << (getIndex() + 1) << endl;
+                        std::cout << endl << "NODE " << getIndex()+1  << " : " << " timeout for frame number " << msg->getName() << " at node " << (getIndex() + 1) << endl;
                         // timeout: no acknowledge came -> re-send
                         this->S = this->Sf;
                     }
@@ -94,6 +97,7 @@ void Node::handleMessage(cMessage *msg)
             else if (msg->getKind() == 4)
             {
                 EV << endl << " entering a new session" << endl;
+                std::cout << endl << "NODE " << getIndex()+1  << " : " << " entering a new session" << endl;
                 this->is_inactive = false;
                 // EV << endl <<  " previous R value = " << this->R <<endl;
                 this ->ack = -1;
@@ -105,6 +109,7 @@ void Node::handleMessage(cMessage *msg)
             else if (msg->getKind() == 5 && !this->is_inactive)
             {
                 EV << endl << " exiting current session" << endl;
+                std::cout << endl << "NODE " << getIndex()+1  << " : " << " exiting current session" << endl;
                 if (!this->is_dead)
                 {
                     this->is_inactive = true;
@@ -148,13 +153,16 @@ void Node::sendMsg()
     if (this->S <= this->Sl)
     {
         EV << endl << " message payload before framing with character count " << this->msgs[this->S] << endl;
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " message payload before framing with character count " << this->msgs[this->S] << endl;
         // first add char count framing to the message payload
         std::string framed_msg = this->addCharCount(this->msgs[this->S]);
         EV << endl << " message payload after framing with character count " << framed_msg << endl;
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " message payload after framing with character count " << framed_msg << endl;
         int padding = 0;
         // apply hamming technique to the message payload for error detection and correction
         std::string  msg_payload = this->computeHamming(framed_msg, padding);
         EV << endl << " message payload after hamming encode " << msg_payload << endl;
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " message payload after hamming encode " << msg_payload << endl;
         // create the message to be sent
         Imessage_Base * msg = new Imessage_Base(framed_msg.c_str());
         // set the message parameters
@@ -172,10 +180,12 @@ void Node::sendMsg()
         if (this->max_S > this->S)
         {
             EV << endl << " retransmiting message with payload : " << this->msgs[this->S] << endl;
+            std::cout << endl << "NODE " << getIndex()+1  << " : " << " retransmiting message with payload : " << this->msgs[this->S] << endl;
         }
         else
         {
             EV << endl << " message sent successfully !" <<endl;
+            std::cout << endl << "NODE " << getIndex()+1  << " : " << " message sent successfully !" <<endl;
             this->max_S ++;
         }
         // print the window pointers status after sending the message
@@ -208,6 +218,7 @@ void Node::post_receive_ack(cMessage *msg)
     if (((Imessage_Base *)msg)->getAcknowledge() == int(this->msgs.size())-1)
     {
         EV << endl << " node " << getIndex() << " is dead!" << endl;
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " node " << getIndex() << " is dead!" << endl;
         this->is_dead = true;
     }
     // print the new window pointers status( for debugging )
@@ -232,29 +243,37 @@ void Node::post_receive_frame(cMessage *msg)
         // get the message payload to extract the real message from it
         std::string msg_payload = ((Imessage_Base *)msg)->getMessage_payload();
         EV << endl << " recieved message with payload " << ((Imessage_Base *)msg)->getMessage_payload();
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " recieved message with payload " << ((Imessage_Base *)msg)->getMessage_payload();
         EV << ", sequence number " << received_frame_seq_num;
+        std::cout << ", sequence number " << received_frame_seq_num;
         if (((Imessage_Base *)msg)->getAcknowledge() == -1)
         {
             EV << ", message type first frame";
+            std::cout << ", message type first frame";
         }
         else
         {
             EV << ", message type piggybacked";
+            std::cout << ", message type piggybacked";
         }
         EV << " at node " << (getIndex()+1) << "." << endl;
+        std::cout << " at node " << (getIndex()+1) << "." << endl;
         // apply hamming decode to get the exact message ( remove parity bits and correct any detected errors)
         std::string payload = this->decodeHamming(msg_payload, ((Imessage_Base *)msg)->getPad_length());
         // print the real message framed by framing count
         EV << endl << " message payload after decode hamming " << payload << endl;
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " message payload after decode hamming " << payload << endl;
         // check if error occured to the message count
         bool check = this->checkCharCount(payload);
         if (check)
         {
             EV << endl << " message char count right !" <<endl;
+            std::cout << endl << "NODE " << getIndex()+1  << " : " << " message char count right !" <<endl;
         }
         else
         {
             EV << endl << " message char count wrong !" << endl;
+            std::cout << endl << "NODE " << getIndex()+1  << " : " << " message char count wrong !" << endl;
         }
         // print the window pointers status after receiving frame ( for debugging )
         // EV << endl << " S_f = " << this->Sf << " , S = " << this->S << " , S_l = " << this->Sl << " , R = " << this->R <<endl;
@@ -431,6 +450,11 @@ std::string Node::decodeHamming(std::string s, int padding)
     for(int i = 0 ; i < r; i++)
     {
         wrong_bit += parity_vals[i] * (pow(2 , (i)));
+    }
+    if (wrong_bit != 0)
+    {
+            EV << endl << " message contains one bit error !" << endl;
+            std::cout << endl << "NODE " << getIndex()+1  << " : " << " message contains one bit error !" << endl;
     }
     bits[wrong_bit] = !bits[wrong_bit];
     std::vector<bool> msg_bits(mr - r);
