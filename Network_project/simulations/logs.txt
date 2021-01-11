@@ -1,0 +1,1082 @@
+
+HUB :  hub constructed !
+
+HUB :  scheduled a new session after 30s
+
+HUB :  node 3 and node 4 will start working now
+
+NODE 3 :  entering a new session
+
+NODE 3 :  message payload before framing with character count 1/8.Hello iam node 3
+
+NODE 3 :  message payload after framing with character count 1/8.Hello iam node 3
+
+NODE 3 :  message payload after hamming encode cây‡π!îÿÿﬁ@“¬⁄@node 3
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  entering a new session
+
+NODE 4 :  message payload before framing with character count 1/7.Hello iam node 1
+
+NODE 4 :  message payload after framing with character count 1/7.Hello iam node 1
+
+NODE 4 :  message payload after hamming encode “câx‹π!îÿÿﬁ@“¬⁄Anode 1
+
+NODE 4 :  message sent successfully !
+
+HUB :  message before modification “câx‹π!îÿÿﬁ@“¬⁄Anode 1
+
+HUB : 11011110 ---> 11011100
+
+HUB :  message after modification “câx‹π!îÿÿ‹@“¬⁄Anode 1
+
+HUB :  message delayed !
+
+HUB :  delay time = 0
+
+NODE 4 :  recieved message with payload cây‡π!îÿÿﬁ@“¬⁄@node 3, sequence number 0, message type first frame at node 4.
+
+NODE 4 :  message payload after decode hamming 1/8.Hello iam node 3
+
+NODE 4 :  message char count right !
+
+NODE 3 :  recieved message with payload “câx‹π!îÿÿ‹@“¬⁄Anode 1, sequence number 0, message type first frame at node 3.
+
+NODE 3 :  message contains one bit error !
+
+NODE 3 :  message payload after decode hamming 1/7.Hello iam node 1
+
+NODE 3 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 2/8.The violin,
+
+NODE 3 :  message payload after framing with character count 2/8.The violin,
+
+NODE 3 :  message payload after hamming encode ëx‡πQ° @Ï“ﬁÿ“‹,
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 2/7.A flower, sometimes known as
+
+NODE 4 :  message payload after framing with character count "2/7.A flower, sometimes known as
+
+NODE 4 :  message payload after hamming encode Ñ"ëy‹πÅÃÿﬁÓ ‰XAsometimes known!0πÜÄ
+
+NODE 4 :  message sent successfully !
+
+HUB :  message lost !
+
+HUB :  message duplicated !
+
+NODE 3 :  recieved message with payload Ñ"ëy‹πÅÃÿﬁÓ ‰XAsometimes known!0πÜÄ, sequence number 1, message type piggybacked at node 3.
+
+NODE 3 :  message payload after decode hamming "2/7.A flower, sometimes known as
+
+NODE 3 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 3/8.sometimes known as a fiddle
+
+NODE 3 :  message payload after framing with character count !3/8.sometimes known as a fiddle
+
+NODE 3 :  message payload after hamming encode Öôy‡πÕº⁄ Ë“⁄ ÊAknown as a fiddm2ÜÄ
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 3/7.a bloom or blossom,
+
+NODE 4 :  message payload after framing with character count 3/7.a bloom or blossom,
+
+NODE 4 :  message payload after hamming encode “ìôx‹πÑÄƒÿﬁﬁ⁄@ﬁÂ blossom,
+
+NODE 4 :  message sent successfully !
+
+HUB :  message duplicated !
+
+HUB :  message delayed !
+
+HUB :  delay time = 2
+
+NODE 3 :  message payload before framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after hamming encode Ç”°x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 4/7.is the reproductive
+
+NODE 4 :  message payload after framing with character count 4/7.is the reproductive
+
+NODE 4 :  message payload after hamming encode Cí°x‹π•Õ@Ë– @‰ ‡roductive
+
+NODE 4 :  message sent successfully !
+
+HUB :  message before modification Ç”°x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+HUB : 01101111 ---> 01101110
+
+HUB :  message after modification Ç”°x‡π•Õ@¬@Óﬁﬁ» n chnrdophone
+
+HUB :  message before modification Cí°x‹π•Õ@Ë– @‰ ‡roductive
+
+HUB : 01101111 ---> 01101101
+
+HUB :  message after modification Cí°x‹π•Õ@Ë– @‰ ‡rmductive
+
+HUB :  message delayed !
+
+HUB :  delay time = 1
+
+NODE 3 :  recieved message with payload “ìôx‹πÑÄƒÿﬁﬁ⁄@ﬁÂ blossom,, sequence number 2, message type piggybacked at node 3.
+
+NODE 3 :  message payload after decode hamming 3/7.a bloom or blossom,
+
+NODE 3 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after hamming encode ”≥©x‡π•π@Ë– @Ï“ﬁlin family.
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after hamming encode “Ç©y‹πÕ–‰Í∆ËÍ‰ @found in
+
+NODE 4 :  message sent successfully !
+
+NODE 3 :  recieved message with payload Cí°x‹π•Õ@Ë– @‰ ‡rmductive, sequence number 3, message type piggybacked at node 3.
+
+NODE 3 :  message contains one bit error !
+
+NODE 3 :  message payload after decode hamming 4/7.is the reproductive
+
+NODE 3 :  message char count right !
+
+HUB :  message lost !
+
+HUB :  message lost !
+
+NODE 4 :  message payload before framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after hamming encode Sb±x‹πô±ﬁÓ ‰“‹ŒAplants
+
+NODE 4 :  message sent successfully !
+
+NODE 3 :  timeout for frame number 1 at node 3
+
+NODE 3 :  message payload before framing with character count 2/8.The violin,
+
+NODE 3 :  message payload after framing with character count 2/8.The violin,
+
+NODE 3 :  message payload after hamming encode ëx‡πQ° @Ï“ﬁÿ“‹,
+
+NODE 3 :  retransmiting message with payload : 2/8.The violin,
+
+HUB :  message before modification ëx‡πQ° @Ï“ﬁÿ“‹,
+
+HUB : 00001101 ---> 10001101
+
+HUB :  message after modification ëx‡πQ° @Ï“ﬁÿ“‹,ç
+
+NODE 4 :  recieved message with payload ëx‡πQ° @Ï“ﬁÿ“‹,ç, sequence number 1, message type piggybacked at node 4.
+
+NODE 4 :  message contains one bit error !
+
+NODE 4 :  message payload after decode hamming 2/8.The violin,
+
+NODE 4 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 3/8.sometimes known as a fiddle
+
+NODE 3 :  message payload after framing with character count !3/8.sometimes known as a fiddle
+
+NODE 3 :  message payload after hamming encode Öôy‡πÕº⁄ Ë“⁄ ÊAknown as a fiddm2ÜÄ
+
+NODE 3 :  retransmiting message with payload : 3/8.sometimes known as a fiddle
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  message sent successfully !
+
+HUB :  message lost !
+
+HUB :  message lost !
+
+NODE 3 :  message payload before framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after hamming encode Ç”°x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+NODE 3 :  retransmiting message with payload : 4/8.is a wooden chordophone
+
+NODE 4 :  timeout for frame number 4 at node 4
+
+NODE 3 :  message payload before framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after hamming encode ”≥©x‡π•π@Ë– @Ï“ﬁlin family.
+
+NODE 3 :  retransmiting message with payload : 5/8.in the violin family.
+
+NODE 4 :  message payload before framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after hamming encode “Ç©y‹πÕ–‰Í∆ËÍ‰ @found in
+
+NODE 4 :  retransmiting message with payload : 5/7.structure found in
+
+HUB :  message lost !
+
+ ####################### Collective Statistics #######################
+ Total number of generated frames = 12
+ Total number of dropped frames = 6
+ Total number of retransmitted frames = 5
+ Percentage of useful transmitted data = 41.5323%
+
+NODE 4 :  message payload before framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after hamming encode Sb±x‹πô±ﬁÓ ‰“‹ŒAplants
+
+NODE 4 :  retransmiting message with payload : 6/7.flowering plants
+
+HUB :  message lost !
+
+NODE 3 :  timeout for frame number 1 at node 3
+
+NODE 3 :  message payload before framing with character count 2/8.The violin,
+
+NODE 3 :  message payload after framing with character count 2/8.The violin,
+
+NODE 3 :  message payload after hamming encode ëx‡πQ° @Ï“ﬁÿ“‹,
+
+NODE 3 :  retransmiting message with payload : 2/8.The violin,
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  retransmiting message with payload : 7/7.end node 1
+
+HUB :  message lost !
+
+NODE 3 :  message payload before framing with character count 3/8.sometimes known as a fiddle
+
+NODE 3 :  message payload after framing with character count !3/8.sometimes known as a fiddle
+
+NODE 3 :  message payload after hamming encode Öôy‡πÕº⁄ Ë“⁄ ÊAknown as a fiddm2ÜÄ
+
+NODE 3 :  retransmiting message with payload : 3/8.sometimes known as a fiddle
+
+HUB :  message before modification Öôy‡πÕº⁄ Ë“⁄ ÊAknown as a fiddm2ÜÄ
+
+HUB : 01101001 ---> 01101000
+
+HUB :  message after modification Öôy‡πÕº⁄ Ë“⁄ ÊAknown as a fhddm2ÜÄ
+
+NODE 4 :  recieved message with payload Öôy‡πÕº⁄ Ë“⁄ ÊAknown as a fhddm2ÜÄ, sequence number 2, message type piggybacked at node 4.
+
+NODE 4 :  message contains one bit error !
+
+NODE 4 :  message payload after decode hamming !3/8.sometimes known as a fiddle
+
+NODE 4 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after hamming encode Ç”°x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+NODE 3 :  retransmiting message with payload : 4/8.is a wooden chordophone
+
+HUB :  message before modification Ç”°x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+HUB : 10100001 ---> 00100001
+
+HUB :  message after modification Ç”!x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+HUB :  message duplicated !
+
+HUB :  message delayed !
+
+HUB :  delay time = 6
+
+NODE 4 :  timeout for frame number 4 at node 4
+
+NODE 3 :  message payload before framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after hamming encode ”≥©x‡π•π@Ë– @Ï“ﬁlin family.
+
+NODE 3 :  retransmiting message with payload : 5/8.in the violin family.
+
+NODE 4 :  message payload before framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after hamming encode “Ç©y‹πÕ–‰Í∆ËÍ‰ @found in
+
+NODE 4 :  retransmiting message with payload : 5/7.structure found in
+
+HUB :  message duplicated !
+
+HUB :  message duplicated !
+
+NODE 3 :  recieved message with payload “Ç©y‹πÕ–‰Í∆ËÍ‰ @found in, sequence number 4, message type piggybacked at node 3.
+
+NODE 3 :  message payload after decode hamming 5/7.structure found in
+
+NODE 3 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after hamming encode ”£±x‡π5ºÊË@Ï“ﬁÿ“ns have a 
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after hamming encode Sb±x‹πô±ﬁÓ ‰“‹ŒAplants
+
+NODE 4 :  retransmiting message with payload : 6/7.flowering plants
+
+HUB :  message lost !
+
+HUB :  message lost !
+
+NODE 3 :  message payload before framing with character count 7/8.hollow wooden body
+
+NODE 3 :  message payload after framing with character count 7/8.hollow wooden body
+
+NODE 3 :  message payload after hamming encode SÉπy‡π°ΩÿÿﬁÓ@Óﬁﬂden body
+
+NODE 3 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  retransmiting message with payload : 7/7.end node 1
+
+HUB :  message lost !
+
+HUB :  message lost !
+
+NODE 3 :  timeout for frame number 3 at node 3
+
+NODE 3 :  message payload before framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after framing with character count 4/8.is a wooden chordophone
+
+NODE 3 :  message payload after hamming encode Ç”°x‡π•Õ@¬@Óﬁﬁ» n chordophone
+
+NODE 3 :  retransmiting message with payload : 4/8.is a wooden chordophone
+
+HUB :  message lost !
+
+NODE 4 :  recieved message with payload Ç”!x‡π•Õ@¬@Óﬁﬁ» n chordophone, sequence number 3, message type piggybacked at node 4.
+
+NODE 4 :  message contains one bit error !
+
+NODE 4 :  message payload after decode hamming 4/8.is a wooden chordophone
+
+NODE 4 :  message char count right !
+
+NODE 4 :  timeout for frame number 4 at node 4
+
+NODE 3 :  message payload before framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after hamming encode ”≥©x‡π•π@Ë– @Ï“ﬁlin family.
+
+NODE 3 :  retransmiting message with payload : 5/8.in the violin family.
+
+NODE 4 :  message payload before framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after framing with character count 5/7.structure found in
+
+NODE 4 :  message payload after hamming encode “Ç©y‹πÕ–‰Í∆ËÍ‰ @found in
+
+NODE 4 :  retransmiting message with payload : 5/7.structure found in
+
+HUB :  message lost !
+
+HUB :  message before modification “Ç©y‹πÕ–‰Í∆ËÍ‰ @found in
+
+HUB : 10000010 ---> 10000000
+
+HUB :  message after modification “Ä©y‹πÕ–‰Í∆ËÍ‰ @found in
+
+HUB :  message duplicated !
+
+NODE 3 :  message payload before framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after hamming encode ”£±x‡π5ºÊË@Ï“ﬁÿ“ns have a 
+
+NODE 3 :  retransmiting message with payload : 6/8.Most violins have a 
+
+NODE 4 :  message payload before framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after hamming encode Sb±x‹πô±ﬁÓ ‰“‹ŒAplants
+
+NODE 4 :  retransmiting message with payload : 6/7.flowering plants
+
+HUB :  message before modification ”£±x‡π5ºÊË@Ï“ﬁÿ“ns have a 
+
+HUB : 10111100 ---> 10101100
+
+HUB :  message after modification ”£±x‡π5¨ÊË@Ï“ﬁÿ“ns have a 
+
+HUB :  message lost !
+
+NODE 3 :  message payload before framing with character count 7/8.hollow wooden body
+
+NODE 3 :  message payload after framing with character count 7/8.hollow wooden body
+
+NODE 3 :  message payload after hamming encode SÉπy‡π°ΩÿÿﬁÓ@Óﬁﬂden body
+
+NODE 3 :  retransmiting message with payload : 7/8.hollow wooden body
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  retransmiting message with payload : 7/7.end node 1
+
+HUB :  message duplicated !
+
+HUB :  message lost !
+
+NODE 3 :  message payload before framing with character count 8/8.end node 3
+
+NODE 3 :  message payload after framing with character count 8/8.end node 3
+
+NODE 3 :  message payload after hamming encode êÚ¡x‡πïπ»@‹ﬁ» @f
+
+NODE 3 :  message sent successfully !
+
+HUB :  message before modification êÚ¡x‡πïπ»@‹ﬁ» @f
+
+HUB : 11000001 ---> 11100001
+
+HUB :  message after modification êÚ·x‡πïπ»@‹ﬁ» @f
+
+HUB :  message duplicated !
+
+HUB :  message delayed !
+
+HUB :  delay time = 5
+
+NODE 3 :  timeout for frame number 4 at node 3
+
+NODE 3 :  message payload before framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after hamming encode ”≥©x‡π•π@Ë– @Ï“ﬁlin family.
+
+NODE 3 :  retransmiting message with payload : 5/8.in the violin family.
+
+HUB :  message lost !
+
+NODE 4 :  timeout for frame number 5 at node 4
+
+NODE 3 :  message payload before framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after hamming encode ”£±x‡π5ºÊË@Ï“ﬁÿ“ns have a 
+
+NODE 3 :  retransmiting message with payload : 6/8.Most violins have a 
+
+NODE 4 :  message payload before framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after framing with character count 6/7.flowering plants
+
+NODE 4 :  message payload after hamming encode Sb±x‹πô±ﬁÓ ‰“‹ŒAplants
+
+NODE 4 :  retransmiting message with payload : 6/7.flowering plants
+
+HUB :  message lost !
+
+NODE 3 :  recieved message with payload Sb±x‹πô±ﬁÓ ‰“‹ŒAplants, sequence number 5, message type piggybacked at node 3.
+
+NODE 3 :  message payload after decode hamming 6/7.flowering plants
+
+NODE 3 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 7/8.hollow wooden body
+
+NODE 3 :  message payload after framing with character count 7/8.hollow wooden body
+
+NODE 3 :  message payload after hamming encode SÉπy‡π°ΩÿÿﬁÓ@Óﬁﬂden body
+
+NODE 3 :  retransmiting message with payload : 7/8.hollow wooden body
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  retransmiting message with payload : 7/7.end node 1
+
+HUB :  message delayed !
+
+HUB :  delay time = 0
+
+HUB :  message delayed !
+
+HUB :  delay time = 3
+
+NODE 3 :  message payload before framing with character count 8/8.end node 3
+
+NODE 3 :  message payload after framing with character count 8/8.end node 3
+
+NODE 3 :  message payload after hamming encode êÚ¡x‡πïπ»@‹ﬁ» @f
+
+NODE 3 :  retransmiting message with payload : 8/8.end node 3
+
+HUB :  message duplicated !
+
+HUB :  message delayed !
+
+HUB :  delay time = 1
+
+NODE 3 :  timeout for frame number 4 at node 3
+
+NODE 3 :  recieved message with payload —Ûπy‹πï∏»@‹ﬁ» @b, sequence number 6, message type piggybacked at node 3.
+
+NODE 3 :  message payload after decode hamming 7/7.end node 1
+
+NODE 3 :  message char count right !
+
+NODE 3 :  message payload before framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after framing with character count 5/8.in the violin family.
+
+NODE 3 :  message payload after hamming encode ”≥©x‡π•π@Ë– @Ï“ﬁlin family.
+
+NODE 3 :  retransmiting message with payload : 5/8.in the violin family.
+
+HUB :  message lost !
+
+HUB :  ending current session !
+HUB :  sending termination to the nodes 
+
+NODE 3 :  message payload before framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after framing with character count 6/8.Most violins have a 
+
+NODE 3 :  message payload after hamming encode ”£±x‡π5ºÊË@Ï“ﬁÿ“ns have a 
+
+NODE 3 :  retransmiting message with payload : 6/8.Most violins have a 
+
+NODE 3 :  exiting current session
+
+NODE 4 :  exiting current session
+
+HUB :  node 2 stopped at sequence number = 4
+
+HUB :  node 3 stopped at sequence number = 6
+
+HUB :  node 3 and node 4 will stop working now
+
+HUB :  scheduled a new session after 30s
+
+HUB :  node 5 and node 4 will start working now
+
+NODE 5 :  entering a new session
+
+NODE 5 :  message payload before framing with character count 1/6.Hello iam node 5
+
+NODE 5 :  message payload after framing with character count 1/6.Hello iam node 5
+
+NODE 5 :  message payload after hamming encode ”câxÿπ!îÿÿﬁ@“¬⁄@node 5
+
+NODE 5 :  message sent successfully !
+
+NODE 4 :  entering a new session
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  retransmiting message with payload : 7/7.end node 1
+
+HUB :  message before modification ”câxÿπ!îÿÿﬁ@“¬⁄@node 5
+
+HUB : 10111001 ---> 00111001
+
+HUB :  message after modification ”câxÿ9!îÿÿﬁ@“¬⁄@node 5
+
+HUB :  message duplicated !
+
+HUB :  message duplicated !
+
+NODE 4 :  recieved message with payload ”câxÿ9!îÿÿﬁ@“¬⁄@node 5, sequence number 0, message type first frame at node 4.
+
+NODE 4 :  message contains one bit error !
+
+NODE 4 :  message payload after decode hamming 1/6.Hello iam node 5
+
+NODE 4 :  message char count right !
+
+NODE 5 :  recieved message with payload —Ûπy‹πï∏»@‹ﬁ» @b, sequence number 6, message type first frame at node 5.
+
+NODE 5 :  message payload after decode hamming 7/7.end node 1
+
+NODE 5 :  message char count right !
+
+NODE 4 :  timeout for frame number 6 at node 4
+
+NODE 5 :  message payload before framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after hamming encode Ç≤ëxÿπM¡  ∆–@“ÊAhuman vocal
+
+NODE 5 :  message sent successfully !
+
+NODE 4 :  message payload before framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after framing with character count 7/7.end node 1
+
+NODE 4 :  message payload after hamming encode —Ûπy‹πï∏»@‹ﬁ» @b
+
+NODE 4 :  retransmiting message with payload : 7/7.end node 1
+
+HUB :  message delayed !
+
+HUB :  delay time = 4
+
+HUB :  message delayed !
+
+HUB :  delay time = 3
+
+NODE 5 :  message payload before framing with character count 3/6.communication using language.
+
+NODE 5 :  message payload after framing with character count #3/6.communication using language.
+
+NODE 5 :  message payload after hamming encode Ö3ôyÿπçΩ⁄⁄Í‹“∆¬Èion using langua≥≤óÄ
+
+NODE 5 :  message sent successfully !
+
+HUB :  message delayed !
+
+HUB :  delay time = 1
+
+NODE 5 :  message payload before framing with character count 4/6.Each language uses phonetic
+
+NODE 5 :  message payload after framing with character count !4/6.Each language uses phonetic
+
+NODE 5 :  message payload after hamming encode ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phoneth±ÜÄ
+
+NODE 5 :  message sent successfully !
+
+NODE 4 :  node 4 is dead!
+
+HUB :  message before modification ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phoneth±ÜÄ
+
+HUB : 00100000 ---> 00110000
+
+HUB :  message after modification ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses0phoneth±ÜÄ
+
+HUB :  message duplicated !
+
+HUB :  message delayed !
+
+HUB :  delay time = 3
+
+NODE 5 :  message payload before framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after hamming encode S¬©xÿπçΩ⁄ƒ“‹¬Ë“ﬂns of vowel 
+
+NODE 5 :  message sent successfully !
+
+HUB :  message duplicated !
+
+NODE 5 :  timeout for frame number 1 at node 5
+
+NODE 5 :  message payload before framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after hamming encode Ç≤ëxÿπM¡  ∆–@“ÊAhuman vocal
+
+NODE 5 :  retransmiting message with payload : 2/6.Speech is human vocal
+
+NODE 5 :  message payload before framing with character count 3/6.communication using language.
+
+NODE 5 :  message payload after framing with character count #3/6.communication using language.
+
+NODE 5 :  message payload after hamming encode Ö3ôyÿπçΩ⁄⁄Í‹“∆¬Èion using langua≥≤óÄ
+
+NODE 5 :  retransmiting message with payload : 3/6.communication using language.
+
+NODE 5 :  message payload before framing with character count 4/6.Each language uses phonetic
+
+NODE 5 :  message payload after framing with character count !4/6.Each language uses phonetic
+
+NODE 5 :  message payload after hamming encode ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phoneth±ÜÄ
+
+NODE 5 :  retransmiting message with payload : 4/6.Each language uses phonetic
+
+HUB :  message lost !
+
+NODE 5 :  message payload before framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after hamming encode S¬©xÿπçΩ⁄ƒ“‹¬Ë“ﬂns of vowel 
+
+NODE 5 :  retransmiting message with payload : 5/6.combinations of vowel 
+
+NODE 5 :  timeout for frame number 1 at node 5
+
+NODE 5 :  message payload before framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after hamming encode Ç≤ëxÿπM¡  ∆–@“ÊAhuman vocal
+
+NODE 5 :  retransmiting message with payload : 2/6.Speech is human vocal
+
+HUB :  message before modification Ç≤ëxÿπM¡  ∆–@“ÊAhuman vocal
+
+HUB : 01000000 ---> 11000000
+
+HUB :  message after modification Ç≤ëxÿπM¡  ∆–¿“ÊAhuman vocal
+
+NODE 5 :  message payload before framing with character count 3/6.communication using language.
+
+NODE 5 :  message payload after framing with character count #3/6.communication using language.
+
+NODE 5 :  message payload after hamming encode Ö3ôyÿπçΩ⁄⁄Í‹“∆¬Èion using langua≥≤óÄ
+
+NODE 5 :  retransmiting message with payload : 3/6.communication using language.
+
+HUB :  message lost !
+
+NODE 5 :  message payload before framing with character count 4/6.Each language uses phonetic
+
+NODE 5 :  message payload after framing with character count !4/6.Each language uses phonetic
+
+NODE 5 :  message payload after hamming encode ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phoneth±ÜÄ
+
+NODE 5 :  retransmiting message with payload : 4/6.Each language uses phonetic
+
+NODE 5 :  message payload before framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after hamming encode S¬©xÿπçΩ⁄ƒ“‹¬Ë“ﬂns of vowel 
+
+NODE 5 :  retransmiting message with payload : 5/6.combinations of vowel 
+
+HUB :  message duplicated !
+
+NODE 5 :  timeout for frame number 1 at node 5
+
+NODE 5 :  message payload before framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after framing with character count 2/6.Speech is human vocal
+
+NODE 5 :  message payload after hamming encode Ç≤ëxÿπM¡  ∆–@“ÊAhuman vocal
+
+NODE 5 :  retransmiting message with payload : 2/6.Speech is human vocal
+
+NODE 5 :  message payload before framing with character count 3/6.communication using language.
+
+NODE 5 :  message payload after framing with character count #3/6.communication using language.
+
+NODE 5 :  message payload after hamming encode Ö3ôyÿπçΩ⁄⁄Í‹“∆¬Èion using langua≥≤óÄ
+
+NODE 5 :  retransmiting message with payload : 3/6.communication using language.
+
+HUB :  message delayed !
+
+HUB :  delay time = 0
+
+NODE 5 :  message payload before framing with character count 4/6.Each language uses phonetic
+
+NODE 5 :  message payload after framing with character count !4/6.Each language uses phonetic
+
+NODE 5 :  message payload after hamming encode ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phoneth±ÜÄ
+
+NODE 5 :  retransmiting message with payload : 4/6.Each language uses phonetic
+
+HUB :  message before modification ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phoneth±ÜÄ
+
+HUB : 01101000 ---> 01101100
+
+HUB :  message after modification ‘°yÿπÑ∆–@ÿ¬‹ŒÎage uses phonetl±ÜÄ
+
+HUB :  message duplicated !
+
+NODE 5 :  message payload before framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after framing with character count 5/6.combinations of vowel 
+
+NODE 5 :  message payload after hamming encode S¬©xÿπçΩ⁄ƒ“‹¬Ë“ﬂns of vowel 
+
+NODE 5 :  retransmiting message with payload : 5/6.combinations of vowel 
+
+HUB :  message delayed !
+
+HUB :  delay time = 0
+
+ ####################### Collective Statistics #######################
+ Total number of generated frames = 20
+ Total number of dropped frames = 21
+ Total number of retransmitted frames = 43
+ Percentage of useful transmitted data = 17.6275%
+undisposed object: (omnetpp::cMessage) Star.nodes.0 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.1/7.Hello iam node 1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes."2/7.A flower, sometimes known as -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes."2/7.A flower, sometimes known as -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.3/7.a bloom or blossom, -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.4/7.is the reproductive -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.0 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.6/7.flowering plants -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/7.structure found in -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/7.structure found in -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/7.structure found in -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/7.structure found in -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.6/7.flowering plants -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.7 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/7.end node 1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.end session -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.7 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.0 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.1/8.Hello iam node 3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!3/8.sometimes known as a fiddle -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!3/8.sometimes known as a fiddle -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.4/8.is a wooden chordophone -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.0 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.2/8.The violin, -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.4/8.is a wooden chordophone -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/8.in the violin family. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.2/8.The violin, -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!3/8.sometimes known as a fiddle -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/8.in the violin family. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/8.in the violin family. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.4/8.is a wooden chordophone -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.4/8.is a wooden chordophone -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.6/8.Most violins have a  -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/8.hollow wooden body -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/8.hollow wooden body -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/8.hollow wooden body -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.8/8.end node 3 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.8/8.end node 3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.8/8.end node 3 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.8/8.end node 3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.end session -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.6/8.Most violins have a  -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.0 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.1/6.Hello iam node 5 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.1/6.Hello iam node 5 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.#3/6.communication using language. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/6.combinations of vowel  -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/6.combinations of vowel  -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.2/6.Speech is human vocal -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!4/6.Each language uses phonetic -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!4/6.Each language uses phonetic -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.2/6.Speech is human vocal -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.#3/6.communication using language. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/6.combinations of vowel  -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.2/6.Speech is human vocal -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!4/6.Each language uses phonetic -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/6.combinations of vowel  -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/6.combinations of vowel  -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.2/6.Speech is human vocal -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.#3/6.communication using language. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!4/6.Each language uses phonetic -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.!4/6.Each language uses phonetic -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.5/6.combinations of vowel  -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.6 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/7.end node 1 -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/7.end node 1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (Imessage_Base) Star.nodes.7/7.end node 1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.0 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.1 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.2 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.3 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes.4 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.nodes. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.hub. -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.hub.6 -- check module destructor
+undisposed object: (omnetpp::cMessage) Star.hub.4 -- check module destructor
+
+End.

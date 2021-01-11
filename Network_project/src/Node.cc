@@ -217,8 +217,8 @@ void Node::post_receive_ack(cMessage *msg)
     // if acknowledge is the last sequence number then the node is dead
     if (((Imessage_Base *)msg)->getAcknowledge() == int(this->msgs.size())-1)
     {
-        EV << endl << " node " << getIndex() << " is dead!" << endl;
-        std::cout << endl << "NODE " << getIndex()+1  << " : " << " node " << getIndex() << " is dead!" << endl;
+        EV << endl << " node " << getIndex()+1 << " is dead!" << endl;
+        std::cout << endl << "NODE " << getIndex()+1  << " : " << " node " << getIndex()+1 << " is dead!" << endl;
         this->is_dead = true;
     }
     // print the new window pointers status( for debugging )
